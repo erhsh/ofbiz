@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/site-conf.xsd">
+
+	<handler name="java" type="request" class="org.ofbiz.webapp.event.JavaEventHandler" />
+	<handler name="screen" type="view" class="org.ofbiz.widget.screen.MacroScreenViewHandler" />
+
+	<!-- Request Mapping -->
+	<request-map uri="ping">
+		<response name="success" type="view" value="ping" />
+	</request-map>
+
+	<request-map uri="main">
+		<security https="true" auth="true" />
+		<response name="success" type="view" value="main" />
+	</request-map>
+
+	<request-map uri="checkLogin">
+		<response name="success" type="view" value="main" />
+	</request-map>
+
+	<request-map uri="checkLogin" edit="false">
+		<description>Verify a user is logged in.</description>
+		<security https="true" auth="false" />
+		<event type="java" path="org.ofbiz.webapp.control.LoginWorker" invoke="extensionCheckLogin" />
+		<response name="success" type="view" value="main" />
+		<response name="error" type="view" value="login" />
+	</request-map>
+
+	<request-map uri="login">
+		<security https="true" auth="false" />
+		<event type="java" path="org.ofbiz.webapp.control.LoginWorker" invoke="login" />
+		<response name="success" type="view" value="main" />
+		<response name="requirePasswordChange" type="view" value="requirePasswordChange" />
+		<response name="error" type="view" value="login" />
+	</request-map>
+
+	<request-map uri="logout">
+		<security https="true" auth="true" />
+		<event type="java" path="org.ofbiz.webapp.control.LoginWorker" invoke="logout" />
+		<response name="success" type="request-redirect" value="main" />
+		<response name="error" type="view" value="main" />
+	</request-map>
+	<!-- End Request Mapping -->
+
+
+	<!-- Request Mapping -->
+	<view-map name="ping" type="screen" page="component://erpec/widget/erpec/ErpECScreens.xml#Ping" />
+	<view-map name="login" type="screen" page="component://erpec/widget/erpec/CommonScreens.xml#Login" />
+	<view-map name="main" type="screen" page="component://erpec/widget/erpec/ErpECScreens.xml#Main" />
+
+	<!-- End Request Mapping -->
+</site-conf>
+	

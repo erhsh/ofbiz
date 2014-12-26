@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/site-conf.xsd">
+
+	<handler name="screen" type="view"
+		class="org.ofbiz.widget.screen.MacroScreenViewHandler" />
+
+	<handler name="service" type="request"
+		class="org.ofbiz.webapp.event.ServiceEventHandler" />
+
+	<request-map uri="changeOrderStatus">
+		<event type="service" invoke="myChangeOrderStatus" />
+		<response name="success" type="view" value="changeOrderStatus" />
+		<response name="error" type="view" value="changeOrderStatusError"></response>
+	</request-map>
+
+	<view-map name="changeOrderStatus" type="screen"
+		page="component://demo/widget/workflow/WorkflowScreens.xml#ChangeOrderStatus" />
+	<view-map name="changeOrderStatusError" type="screen"
+		page="component://demo/widget/workflow/WorkflowScreens.xml#ChangeOrderStatusError" />
+</site-conf>
+	

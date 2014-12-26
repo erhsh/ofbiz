@@ -1,0 +1,62 @@
+import org.ofbiz.base.location.FlexibleLocation;
+
+import freemarker.ext.beans.BeansWrapper;
+
+String scriptName = request.getParameter("scriptName");
+
+if (scriptName == null || scriptName.length() == 0) {
+
+    return "success";
+
+}
+
+String lookInLocation = "component://learning/webapp/learning/WEB-INF/actions/entityaccess/";
+
+URL location = FlexibleLocation.resolveLocation(lookInLocation + scriptName);
+
+if (location == null) {
+
+    context.put("errorMsg", "Script name \"" + scriptName + "\" not found at " + lookInLocation);
+
+    return "success";
+
+}
+
+source(location);
+
+bw = BeansWrapper.getDefaultInstance();
+
+bw.setSimpleMapWrapper(true);
+
+Object massaged;
+
+if (data instanceof List) {
+
+    massaged = new ArrayList();
+
+    dataItr = data.iterator();
+
+    while (dataItr.hasNext()) {
+
+        record = (Map) dataItr.next();
+
+        massaged.add(bw.wrap(record));
+
+    }
+
+}
+
+else if (data instanceof Map) {
+
+    massaged = bw.wrap(data);
+
+}
+
+if (massaged != null) {
+
+    context.put("data", bw.wrap(data));
+
+}
+
+return "success";
+

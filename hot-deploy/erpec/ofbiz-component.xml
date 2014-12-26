@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ofbiz-component name="erpec"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/ofbiz-component.xsd">
+
+	<resource-loader name="main" type="component" />
+
+	<classpath type="jar" location="build/lib/*" />
+	<classpath type="dir" location="config" />
+
+	<webapp name="erpec"
+		title="This is an Enterprise Resource Planning - Electronic Commerce System"
+		server="default-server" location="webapp/erpec" base-permission="NONE"
+		mount-point="/erpec" />
+
+	<webapp name="erpec-users" title="This is ERP-EC users application"
+		server="default-server" location="webapp/users" base-permission="NONE"
+		mount-point="/erpec/users" />
+
+	<webapp name="erpec-goods" title="This is ERP-EC goods application"
+		server="default-server" location="webapp/goods" base-permission="NONE"
+		mount-point="/erpec/goods" />
+</ofbiz-component>

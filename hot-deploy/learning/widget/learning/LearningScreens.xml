@@ -1,0 +1,1519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/widget-screen.xsd">
+
+	<screen name="SimplestScreen">
+
+		<section>
+
+			<widgets>
+
+				<label text="Simplest Screen possible in OFBiz!" />
+
+			</widgets>
+
+		</section>
+
+	</screen>
+	<screen name="ConditionalScreen">
+
+		<section>
+
+			<condition>
+
+				<if-compare field="parameters.show" operator="equals"
+					value="widgets" />
+
+			</condition>
+
+			<actions>
+
+				<script
+
+					location="component://learning/webapp/learning/WEB-INF/actions/learning/conditionalScreenActions.bsh" />
+
+			</actions>
+
+			<widgets>
+
+				<label text="${passMsg}" />
+
+			</widgets>
+
+			<fail-widgets>
+
+				<label
+					text="Condition failed! Showing fail-widgets element.  
+
+                  Blah is: ${blah}" />
+
+			</fail-widgets>
+
+
+
+		</section>
+
+	</screen>
+	<screen name="ConditionalScreenWithBsh">
+
+		<section>
+
+			<condition>
+
+				<if-compare field="parameters.show" operator="equals"
+					value="widgets" />
+
+			</condition>
+
+			<actions>
+
+				<script
+
+					location="component://learning/webapp/learning/WEB-INF/actions/learning/conditionalScreenActions.bsh" />
+
+			</actions>
+
+			<widgets>
+
+				<label text="${passMsg}" />
+
+			</widgets>
+
+			<fail-widgets>
+
+				<label
+					text="Condition failed! Showing fail-widgets element.  
+
+                  Blah is: ${blah}" />
+
+			</fail-widgets>
+
+
+
+		</section>
+
+	</screen>
+	<screen name="NestedSections">
+
+		<section>
+
+			<condition>
+
+				<if-compare field="parameters.outer" operator="equals"
+					value="true" />
+
+			</condition>
+
+			<actions>
+
+				<set field="blah" value="blih" />
+
+			</actions>
+
+			<widgets>
+
+				<container>
+
+					<label
+						text="In Then part. Blah is:  
+
+                            ${blah}" />
+
+				</container>
+
+				<container>
+
+					<label
+						text="inner is:  
+
+                            ${parameters.inner}" />
+
+				</container>
+
+				<section>
+
+					<condition>
+
+						<if-compare field="parameters.inner" operator="equals"
+							value="true" />
+
+					</condition>
+
+					<actions>
+
+						<set field="inner.blah" value="thenBlih" />
+
+					</actions>
+
+					<widgets>
+
+						<label
+							text="In Then-Then part. inner.blah is:  
+
+                     ${inner.blah}" />
+
+					</widgets>
+
+					<fail-widgets>
+
+						<label
+							text="In Then-Else part. inner.blah is:  
+
+                     ${inner.blah}" />
+
+					</fail-widgets>
+
+				</section>
+
+			</widgets>
+
+			<fail-widgets>
+
+				<container>
+
+					<label
+						text="In Else part. Blah is:  
+
+                            ${blah}" />
+
+				</container>
+
+				<container>
+
+					<label
+						text="inner is:  
+
+                            ${parameters.inner}" />
+
+				</container>
+
+				<section>
+
+					<condition>
+
+						<if-compare field="parameters.inner" operator="equals"
+							value="true" />
+
+					</condition>
+
+					<actions>
+
+						<set field="inner.blah" value="elseBlih" />
+
+					</actions>
+
+					<widgets>
+
+						<label
+							text="In Else-Then part. inner.blah is:  
+
+                     ${inner.blah}" />
+
+					</widgets>
+
+					<fail-widgets>
+
+						<label
+							text="In Else-Else part. inner.blah is: 
+
+                     ${inner.blah}" />
+
+					</fail-widgets>
+
+				</section>
+
+			</fail-widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="AnotherSimpleScreen">
+
+		<section>
+
+			<widgets>
+
+				<label text="Just Another Simple Screen." />
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="CompoundedScreen">
+
+		<section>
+
+			<condition>
+
+				<if-compare operator="equals" field="parameters.show"
+					value="true" />
+
+			</condition>
+
+			<widgets>
+
+				<decorator-screen name="intermediate-decorator">
+
+					<decorator-section name="title">
+
+						<label text="A Screen made up of 2 simpler screens." />
+
+					</decorator-section>
+
+					<decorator-section name="body">
+
+						<include-screen name="SimplestScreen" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+			<fail-widgets>
+
+				<decorator-screen name="intermediate-decorator">
+
+					<decorator-section name="title">
+
+						<label text="A Screen made up of 2 simpler screens." />
+
+					</decorator-section>
+
+					<decorator-section name="body">
+
+						<include-screen name="AnotherSimpleScreen" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</fail-widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="GlobalContext">
+
+		<section>
+
+			<actions>
+
+				<set field="global1" value="Global Value A" global="true" />
+
+				<set field="local1" value="Local Value a" />
+
+				<script
+					location="component://learning/webapp/learning/WEB-INF/actions/learning/globalContext.bsh" />
+
+			</actions>
+
+			<widgets>
+
+				<label text="&lt;table style=&quot;width:50%&quot;&gt;&lt;tr&gt;" />
+
+				<label text="&lt;td style=&quot;border:thin solid&quot;&gt;" />
+
+				<include-screen name="NestedScreen" />
+
+				<label text="&lt;/td&gt;" />
+
+				<label text="&lt;td style=&quot;border:thin solid&quot;&gt;" />
+
+				<container>
+					<label text="GlobalContext screen:" />
+				</container>
+
+				<container>
+					<label text="global1: ${global1}" />
+				</container>
+
+				<container>
+					<label text="global2: ${global2}" />
+				</container>
+
+				<container>
+					<label text="global3: ${global3}" />
+				</container>
+
+				<container>
+					<label text="global4: ${global4}" />
+				</container>
+
+				<container>
+					<label text="local1: ${local1}" />
+				</container>
+
+				<container>
+					<label text="local2: ${local2}" />
+				</container>
+
+				<container>
+					<label text="local3: ${local3}" />
+				</container>
+
+				<container>
+					<label text="local4: ${local4}" />
+				</container>
+
+				<label text="&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" />
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+
+	<screen name="NestedScreen">
+
+		<section>
+
+			<actions>
+
+				<set field="global3" value="Global Value C" global="true" />
+
+				<set field="global4" value="Global Value D" global="true" />
+
+				<set field="local3" value="Local Value c" />
+
+				<set field="local4" value="Local Value d" />
+
+				<set field="local1" value="Local Value z" />
+
+			</actions>
+
+			<widgets>
+
+				<container>
+					<label text="NestedScreen screen:" />
+				</container>
+
+				<container>
+					<label text="global1: ${global1}" />
+				</container>
+
+				<container>
+					<label text="global2: ${global2}" />
+				</container>
+
+				<container>
+					<label text="global3: ${global3}" />
+				</container>
+
+				<container>
+					<label text="global4: ${global4}" />
+				</container>
+
+				<container>
+					<label text="local1: ${local1}" />
+				</container>
+
+				<container>
+					<label text="local2: ${local2}" />
+				</container>
+
+				<container>
+					<label text="local3: ${local3}" />
+				</container>
+
+				<container>
+					<label text="local4: ${local4}" />
+				</container>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="header">
+
+		<section>
+			<widgets>
+
+				<platform-specific>
+					<html>
+
+						<html-template
+							location="component://learning/webapp/learning/includes/header.ftl" />
+
+					</html>
+				</platform-specific>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="footer">
+
+		<section>
+
+			<widgets>
+
+				<platform-specific>
+					<html>
+
+						<html-template
+							location="component://learning/webapp/learning/includes/footer.ftl" />
+
+					</html>
+				</platform-specific>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="xhtml-decorator">
+
+		<section>
+			<actions>
+
+				<set field="layoutSettings.styleSheets[]" value="/flatgrey/maincss.css" />
+
+				<set field="layoutSettings.javaScripts[]" value="/images/selectall.js" />
+
+			</actions>
+
+			<widgets>
+				<platform-specific>
+
+					<html>
+
+						<html-template-decorator
+							location="component://learning/webapp/learning/includes/header.ftl">
+
+							<html-template-decorator-section
+								name="title">
+
+								<decorator-section-include name="title" />
+
+							</html-template-decorator-section>
+
+						</html-template-decorator>
+
+					</html>
+
+				</platform-specific>
+
+				<decorator-section-include name="body" />
+
+				<include-screen name="footer" />
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="header1">
+
+		<section>
+
+			<widgets>
+
+				<platform-specific>
+					<html>
+
+						<html-template
+							location="component://learning/webapp/learning/includes/header1.ftl" />
+
+					</html>
+				</platform-specific>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="header2">
+
+		<section>
+
+			<widgets>
+
+				<platform-specific>
+
+					<html>
+
+						<html-template
+
+							location="component://learning/webapp/learning/includes/header2.ftl" />
+
+					</html>
+
+				</platform-specific>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="body-header">
+
+		<section>
+
+			<widgets>
+
+				<label text="Start of Body" />
+
+				<label text="&lt;span style=&quot;background-color:#FFEEEE&quot;&gt;" />
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="body-footer">
+
+		<section>
+
+			<widgets>
+
+				<label text="&lt;/span&gt;" />
+
+				<label text="End of Body" />
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="body-decorator">
+
+		<section>
+
+			<widgets>
+
+				<include-screen name="body-header" />
+
+				<decorator-section-include name="body" />
+
+				<include-screen name="body-footer" />
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+
+	<screen name="level1-decorator">
+
+		<section>
+
+			<widgets>
+
+				<decorator-screen name="level2-decorator">
+
+					<decorator-section name="title">
+
+						<decorator-section-include name="title" />
+
+					</decorator-section>
+
+					<decorator-section name="body">
+
+						<include-screen name="body-header" />
+
+						<decorator-section-include name="body" />
+
+						<include-screen name="body-footer" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="level2-decorator">
+
+		<section>
+
+			<widgets>
+
+				<include-screen name="header1" />
+
+				<decorator-section-include name="title" />
+
+				<include-screen name="header2" />
+
+				<decorator-section-include name="body" />
+
+				<include-screen name="footer" />
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="title-decorator">
+
+		<section>
+
+			<widgets>
+
+				<label text="** Decorated Title! **: " />
+
+				<decorator-section-include name="title" />
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="intermediate-decorator">
+
+		<section>
+
+			<widgets>
+
+				<decorator-screen name="xhtml-decorator">
+
+					<decorator-section name="title">
+
+						<decorator-screen name="title-decorator">
+
+							<decorator-section name="title">
+
+								<decorator-section-include name="title" />
+
+							</decorator-section>
+
+						</decorator-screen>
+
+					</decorator-section>
+
+					<decorator-section name="body">
+
+						<decorator-screen name="body-decorator">
+
+							<decorator-section name="body">
+
+								<decorator-section-include name="body" />
+
+							</decorator-section>
+
+						</decorator-screen>
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="OneFormScreen">
+
+		<section>
+
+			<widgets>
+
+				<decorator-screen name="xhtml-decorator">
+
+					<decorator-section name="title">
+
+						<label text="A Screen with just 1 form." />
+
+					</decorator-section>
+
+					<decorator-section name="body">
+
+						<include-form name="FirstForm"
+
+							location="component://learning/widget/learning/LearningForms.xml" />
+
+						<include-screen name="ShowProcessing" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="ListFormScreen">
+
+		<section>
+
+			<actions>
+
+				<set field="row1.firstName" value="First1" />
+
+				<set field="row1.lastName" value="Last1" />
+
+				<set field="row2.firstName" value="First2" />
+
+				<set field="row2.lastName" value="Last2" />
+
+				<set field="row3.firstName" value="First3" />
+
+				<set field="row3.lastName" value="Last3" />
+
+				<set field="listOfRecords[]" from-field="row1" />
+
+				<set field="listOfRecords[]" from-field="row2" />
+
+				<set field="listOfRecords[]" from-field="row3" />
+
+			</actions>
+
+			<widgets>
+
+				<decorator-screen name="xhtml-decorator">
+
+					<decorator-section name="title">
+
+						<label text="A Screen with a list of forms." />
+
+					</decorator-section>
+
+					<decorator-section name="body">
+
+						<include-form name="ListForm"
+
+							location="component://learning/widget/learning/LearningForms.xml" />
+
+						<include-screen name="ShowProcessing" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="ShowProcessing">
+
+		<section>
+
+			<condition>
+
+				<not>
+
+					<if-empty field="parameters.submit" />
+
+				</not>
+
+			</condition>
+
+			<widgets>
+
+				<container>
+
+					<label text="firstName: ${parameters.firstName}" />
+
+				</container>
+
+				<container>
+
+					<label text="lastName: ${parameters.lastName}" />
+
+				</container>
+
+				<container>
+
+					<label text="combined: ${parameters.combined}" />
+
+				</container>
+
+				<container>
+
+					<label text="submit: ${parameters.submit}" />
+
+				</container>
+
+				<container>
+
+					<label text="All the parameters we received:" />
+
+				</container>
+
+				<container>
+
+					<label text="${parameters.allParams}" />
+
+				</container>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="MultiFormScreen">
+
+		<section>
+
+			<actions>
+
+				<script
+
+					location="component://learning/webapp/learning/WEB-INF/actions/learning/loadListOfSampleData.bsh" />
+
+			</actions>
+
+			<widgets>
+
+				<decorator-screen name="xhtml-decorator">
+
+					<decorator-section name="title">
+
+						<label text="A Screen with a multi type form." />
+
+					</decorator-section>
+
+					<decorator-section name="body">
+
+						<include-form name="MultiForm"
+
+							location="component://learning/widget/learning/LearningForms.xml" />
+
+						<include-screen name="ShowProcessing" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="TwoTargetFormScreen">
+
+		<section>
+
+			<actions>
+
+				<entity-one entity-name="Person" value-field="record" />
+
+			</actions>
+
+			<widgets>
+
+				<decorator-screen name="xhtml-decorator">
+
+					<decorator-section name="title">
+
+						<label text="A Screen with a 2-target form." />
+
+					</decorator-section>
+
+					<decorator-section name="body">
+
+						<include-form name="TwoTargetForm"
+
+							location="component://learning/widget/learning/LearningForms.xml" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="RowMutatingFormScreen">
+
+		<section>
+
+			<actions>
+
+				<set field="row1.firstName" value="First1" />
+
+				<set field="row1.lastName" value="Last1" />
+
+				<set field="row2.firstName" value="First2" />
+
+				<set field="row2.lastName" value="Last2" />
+
+				<set field="row3.firstName" value="First3" />
+
+				<set field="row3.lastName" value="Last3" />
+
+				<set field="listOfRecords[]" from-field="row1" />
+
+				<set field="listOfRecords[]" from-field="row2" />
+
+				<set field="listOfRecords[]" from-field="row3" />
+
+			</actions>
+
+			<widgets>
+
+				<decorator-screen name="xhtml-decorator">
+
+					<decorator-section name="title">
+
+						<label text="A Screen with a list of forms." />
+
+					</decorator-section>
+
+					<decorator-section name="body">
+
+						<include-form name="RowMutatingForm"
+
+							location="component://learning/widget/learning/LearningForms.xml" />
+
+						<include-screen name="ShowProcessing" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="CommonLearningDecorator">
+
+		<section>
+
+			<widgets>
+
+				<decorator-screen name="xhtml-decorator">
+
+					<decorator-section name="title">
+
+						<decorator-section-include name="title" />
+
+					</decorator-section>
+
+					<decorator-section name="body">
+
+						<include-menu name="TopMenu"
+
+							location="component://learning/widget/learning/LearningMenus.xml" />
+
+						<decorator-section-include name="body" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="SimplestScreenWithMenu">
+
+		<section>
+
+			<actions>
+
+				<set field="tabButtonItem" value="SimplestScreen" />
+
+			</actions>
+
+			<widgets>
+
+				<decorator-screen name="main-decorator"
+					location="${parameters.mainDecoratorLocation}">
+
+					<decorator-section name="body">
+
+						<include-screen name="SimplestScreen" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="ConditionalScreenWithMenu">
+
+		<section>
+
+			<actions>
+
+				<set field="tabButtonItem" value="ConditionalScreen" />
+
+			</actions>
+
+			<widgets>
+
+				<decorator-screen name="CommonLearningDecorator">
+
+					<decorator-section name="body">
+
+						<include-menu name="ConditionalScreenSubMenu"
+							location="component://learning/widget/learning/LearningMenus.xml" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="NestedSectionsWithMenu">
+
+		<section>
+
+			<actions>
+
+				<set field="tabButtonItem" value="NestedSections" />
+
+			</actions>
+
+			<widgets>
+
+				<decorator-screen name="CommonLearningDecorator">
+
+					<decorator-section name="body">
+
+						<include-menu name="NestedSectionsMenu"
+							location="component://learning/widget/learning/LearningMenus.xml" />
+
+						<include-screen name="NestedSections" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="CompoundedScreenWithMenu">
+
+		<section>
+
+			<actions>
+
+				<set field="tabButtonItem" value="SimplestScreen" />
+
+			</actions>
+
+			<widgets>
+
+				<decorator-screen name="CommonLearningDecorator">
+
+					<decorator-section name="body">
+
+						<include-menu name="CompoundedMenu"
+							location="component://learning/widget/learning/LearningMenus.xml" />
+
+						<include-screen name="CompoundedScreen" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="forceToHttps">
+
+		<section>
+
+			<widgets>
+
+				<decorator-screen name="main-decorator"
+					location="${parameters.mainDecoratorLocation}">
+
+					<decorator-section name="body">
+
+						<label text="This should only be viewable with an https request" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="withAuth">
+
+		<section>
+
+			<widgets>
+
+				<decorator-screen name="main-decorator"
+
+					location="${parameters.mainDecoratorLocation}">
+
+					<decorator-section name="body">
+
+						<label text="This should only be viewable when logged in." />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="noDirectRequest">
+
+		<section>
+
+			<widgets>
+
+				<decorator-screen name="main-decorator"
+
+					location="${parameters.mainDecoratorLocation}">
+
+					<decorator-section name="body">
+
+						<label
+							text="This should not be directly viewable with request &quot;noDirectRequest&quot;." />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="goodScreen">
+
+		<section>
+
+			<widgets>
+
+				<decorator-screen name="main-decorator"
+					location="${parameters.mainDecoratorLocation}">
+
+					<decorator-section name="body">
+
+						<label text="This is the good screen." />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="badScreen">
+
+		<section>
+
+			<widgets>
+
+				<decorator-screen name="main-decorator"
+					location="${parameters.mainDecoratorLocation}">
+
+					<decorator-section name="body">
+
+						<label text="This is the bad screen." />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="reqRedirectTarget">
+
+		<section>
+
+			<actions>
+
+				<set field="paramStr"
+
+					value="${bsh: 
+
+            import org.ofbiz.base.util.*; 
+
+            UtilMisc.printMap(UtilHttp.getParameterMap(request)). 
+
+            replaceAll(&quot;\n&quot;, &quot;&lt;br/&gt;&quot;);}" />
+
+			</actions>
+
+			<widgets>
+
+				<decorator-screen name="main-decorator"
+					location="${parameters.mainDecoratorLocation}">
+
+					<decorator-section name="body">
+
+						<container>
+
+							<label text="Request redirected." />
+
+						</container>
+
+						<container>
+
+							<label text="Params:" />
+
+						</container>
+
+						<container>
+
+							<label text="${paramStr}" />
+
+						</container>
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="ShowPlanetManyRelation">
+
+		<section>
+
+			<actions>
+
+				<!-- First, get all planets. -->
+
+				<entity-condition entity-name="Planet"
+					filter-by-date="true" list="planets">
+
+					<order-by field-name="planetName" />
+
+				</entity-condition>
+
+			</actions>
+
+			<widgets>
+
+				<!-- For each planet, show addresses -->
+
+				<iterate-section entry="planet" list="planets">
+
+					<section>
+
+						<actions>
+
+							<get-related value-field="planet" relation-name="PostalAddress"
+								list="planetAddresses" />
+
+						</actions>
+
+						<widgets>
+
+							<platform-specific>
+
+								<html>
+
+									<html-template
+										location="component://learning/webapp/learning/planetAddresses.ftl" />
+
+								</html>
+
+							</platform-specific>
+
+						</widgets>
+
+					</section>
+
+				</iterate-section>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="ProcessEntityAccessBSF">
+
+		<section>
+
+			<actions>
+
+				<script
+
+					location="component://learning/webapp/learning/WEB-INF/actions/entityaccess/processEntityAccessBSF.bsh" />
+
+			</actions>
+
+			<widgets>
+
+				<decorator-screen name="main-decorator"
+					location="${parameters.mainDecoratorLocation}">
+
+					<decorator-section name="title">
+
+						<label text="Generic Screen for Displaying Data Retrieved" />
+
+					</decorator-section>
+
+					<decorator-section name="body">
+
+						<include-form name="ScriptNameForm"
+							location="component://learning/widget/learning/LearningForms.xml" />
+
+						<section>
+
+							<condition>
+
+								<not>
+
+									<if-empty field="parameters.scriptName" />
+
+								</not>
+
+							</condition>
+
+							<widgets>
+
+								<platform-specific>
+
+									<html>
+
+										<html-template
+
+											location="component://learning/webapp/learning/entityaccess/displaydataretrieved.ftl" />
+
+									</html>
+
+								</platform-specific>
+
+							</widgets>
+
+						</section>
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="TestFirstService">
+
+		<section>
+
+			<widgets>
+
+				<section>
+
+					<condition>
+
+						<if-empty field="formTarget" />
+
+					</condition>
+
+					<actions>
+
+						<set field="formTarget" value="TestFirstService" />
+
+						<set field="title" value="Testing Our First Service" />
+
+					</actions>
+
+					<widgets />
+
+				</section>
+
+				<decorator-screen name="main-decorator"
+					location="${parameters.mainDecoratorLocation}">
+
+					<decorator-section name="body">
+
+						<include-form name="TestingServices"
+							location="component://learning/widget/learning/LearningForms.xml" />
+
+						<label text="Full Name: ${parameters.fullName}" />
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="TestFirstServiceOutput">
+
+		<section>
+
+			<actions>
+
+				<set field="formTarget" value="TestFirstServiceOutput" />
+
+			</actions>
+
+			<widgets>
+
+				<include-screen name="TestFirstService" />
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+
+
+</screens>
+

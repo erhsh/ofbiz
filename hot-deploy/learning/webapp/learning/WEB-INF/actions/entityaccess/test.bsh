@@ -1,0 +1,3 @@
+data = delegator.findByAnd("PostalAddress",null);
+
+

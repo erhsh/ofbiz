@@ -1,0 +1,173 @@
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/widget-form.xsd">
+
+	<form name="FirstForm" type="single" target="processFirstForm">
+
+		<field name="firstName">
+
+			<text />
+
+		</field>
+
+		<field name="lastName">
+
+			<text />
+
+		</field>
+
+		<field name="submit">
+
+			<submit />
+
+		</field>
+
+	</form>
+	<form name="ListForm" type="list" list-name="listOfRecords"
+		target="processListForm" separate-columns="true">
+
+		<field name="firstName">
+
+			<text />
+
+		</field>
+
+		<field name="lastName">
+
+			<text />
+
+		</field>
+
+		<field name="submit">
+
+			<submit />
+
+		</field>
+
+	</form>
+
+	<form name="MultiForm" type="multi" list-name="listOfRecords"
+
+		target="processMultiForm" separate-columns="true">
+
+		<field name="firstName">
+
+			<text />
+
+		</field>
+
+		<field name="lastName">
+
+			<text />
+
+		</field>
+
+		<field name="_rowSubmit" title="Select">
+
+			<check />
+
+		</field>
+
+		<field name="submit">
+
+			<submit />
+
+		</field>
+
+	</form>
+
+	<form name="TwoTargetForm" type="single" target="updateRecord"
+		default-map-name="record">
+
+		<alt-target target="createRecord" use-when="record==null" />
+
+		<field name="firstName">
+
+			<text />
+
+		</field>
+
+		<field name="lastName">
+
+			<text />
+
+		</field>
+
+		<field name="submit">
+
+			<submit />
+
+		</field>
+
+	</form>
+	<form name="RowMutatingForm" type="list" list-name="listOfRecords"
+		target="processListForm" separate-columns="true">
+
+		<row-actions>
+
+			<set field="firstName" value="${firstName} Name" />
+
+			<set field="lastName" value="${lastName} Name" />
+
+		</row-actions>
+
+		<field name="firstName">
+
+			<text />
+
+		</field>
+
+		<field name="lastName">
+
+			<text />
+
+		</field>
+
+		<field name="submit">
+
+			<submit />
+
+		</field>
+
+	</form>
+	<form name="ScriptNameForm" type="single" target="ProcessEntityAccessBSF">
+
+		<field name="scriptName">
+
+			<text />
+
+		</field>
+
+		<field name="submit">
+
+			<submit />
+
+		</field>
+
+	</form>
+
+	<form name="TestingServices" type="single" target="${formTarget}">
+
+		<field name="firstName">
+			<text />
+		</field>
+
+		<field name="lastName">
+			<text />
+		</field>
+
+		<field name="planetId">
+			<text />
+		</field>
+
+		<field name="submit">
+			<submit />
+		</field>
+
+	</form>
+
+
+
+
+</forms>
+

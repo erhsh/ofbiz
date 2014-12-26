@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/site-conf.xsd">
+
+	<description>Learning Module Site Configuration File</description>
+
+	<handler name="screen" type="view"
+		class="org.ofbiz.widget.screen.MacroScreenViewHandler" />
+
+	<handler name="java" type="request"
+		class="org.ofbiz.webapp.event.JavaEventHandler" />
+
+	<handler name="service" type="request"
+		class="org.ofbiz.webapp.event.ServiceEventHandler" />
+
+	<handler name="service-multi" type="request"
+		class="org.ofbiz.webapp.event.ServiceMultiEventHandler" />
+
+	<preprocessor>
+
+		<event type="java" path="org.ofbiz.webapp.control.LoginWorker"
+			invoke="checkExternalLoginKey" />
+
+	</preprocessor>
+
+	<!-- Request Mappings -->
+	<request-map uri="SimplestScreen">
+		<response name="success" type="view" value="SimplestScreen" />
+	</request-map>
+	<request-map uri="ConditionalScreen">
+		<response name="success" type="view" value="ConditionalScreen" />
+	</request-map>
+	<request-map uri="ConditionalScreenWithBsh">
+		<response name="success" type="view" value="ConditionalScreenWithBsh" />
+	</request-map>
+	<request-map uri="NestedSections">
+
+		<response name="success" type="view" value="NestedSections" />
+
+	</request-map>
+
+
+	<request-map uri="CompoundedScreen">
+
+		<response name="success" type="view" value="CompoundedScreen" />
+
+	</request-map>
+	<request-map uri="GlobalContext">
+
+		<response name="success" type="view" value="GlobalContext" />
+
+	</request-map>
+
+	<request-map uri="OneForm">
+
+		<response name="success" type="view" value="OneFormScreen" />
+
+	</request-map>
+	<request-map uri="processFirstForm">
+
+		<event type="java" path="org.ofbiz.learning.learning.LearningEvents"
+			invoke="processFirstForm" />
+
+		<response name="success" type="view" value="OneFormScreen" />
+
+	</request-map>
+
+	<request-map uri="ListForm">
+
+		<response name="success" type="view" value="ListFormScreen" />
+
+	</request-map>
+	<request-map uri="processListForm">
+
+		<event type="java" path="org.ofbiz.learning.learning.LearningEvents"
+			invoke="processFirstForm" />
+
+		<response name="success" type="view" value="ListFormScreen" />
+
+	</request-map>
+
+	<request-map uri="MultiForm">
+
+		<response name="success" type="view" value="MultiFormScreen" />
+
+	</request-map>
+	<request-map uri="processMultiForm">
+
+		<event type="java" path="org.ofbiz.learning.learning.LearningEvents"
+			invoke="processMultiForm" />
+
+		<response name="success" type="view" value="MultiFormScreen" />
+
+	</request-map>
+
+	<request-map uri="TwoTargetForm">
+
+		<response name="success" type="view" value="TwoTargetFormScreen" />
+
+	</request-map>
+
+	<request-map uri="RowMutatingForm">
+
+		<response name="success" type="view" value="RowMutatingFormScreen" />
+
+	</request-map>
+
+	<request-map uri="main">
+
+		<response name="success" type="view" value="main" />
+
+	</request-map>
+
+	<!-- Security Mappings -->
+
+	<request-map uri="checkLogin" edit="false">
+
+		<description>
+
+            Verify a user is logged in.
+
+        </description>
+
+		<security https="true" auth="false" />
+
+		<event type="java" path="org.ofbiz.webapp.control.LoginWorker"
+			invoke="checkLogin" />
+
+		<response name="success" type="view" value="main" />
+
+		<response name="error" type="view" value="login" />
+
+	</request-map>
+
+	<request-map uri="login">
+
+		<security https="true" auth="false" />
+
+		<event type="java" path="org.ofbiz.webapp.control.LoginWorker"
+			invoke="login" />
+
+		<response name="success" type="view" value="main" />
+
+		<response name="error" type="view" value="login" />
+
+	</request-map>
+
+	<request-map uri="logout">
+
+		<security https="true" auth="true" />
+
+		<event type="java" path="org.ofbiz.webapp.control.LoginWorker"
+			invoke="logout" />
+
+		<response name="success" type="request" value="checkLogin" />
+
+		<response name="error" type="view" value="main" />
+
+	</request-map>
+
+	<!-- End of Security Mappings -->
+
+
+	<request-map uri="forceToHttps">
+
+		<security https="true" />
+
+		<response name="success" type="view" value="forceToHttps" />
+
+	</request-map>
+
+	<request-map uri="withAuth">
+
+		<security auth="true" https="true" />
+
+		<response name="success" type="view" value="withAuth" />
+
+	</request-map>
+
+	<request-map uri="noDirectRequest">
+
+		<security direct-request="false" />
+
+		<response name="success" type="view" value="noDirectRequest" />
+
+	</request-map>
+
+	<request-map uri="chooseResponse">
+
+		<event type="java" path="org.ofbiz.learning.learning.LearningEvents"
+			invoke="chooseResponse" />
+
+		<response name="success" type="view" value="goodScreen" />
+
+		<response name="error" type="view" value="badScreen" />
+
+	</request-map>
+
+	<request-map uri="directToReq">
+
+		<response name="success" type="request" value="noDirectRequest" />
+
+	</request-map>
+
+	<request-map uri="reqRedirect">
+
+		<response name="success" type="request-redirect" value="reqRedirectTarget" />
+
+	</request-map>
+
+	<request-map uri="reqRedirectTarget">
+
+		<response name="success" type="view" value="reqRedirectTarget" />
+
+	</request-map>
+
+	<request-map uri="reqRedirectNoparam">
+
+		<response name="success" type="request-redirect-noparam"
+			value="reqRedirectTarget" />
+
+	</request-map>
+
+	<request-map uri="ShowPlanetManyRelation">
+
+		<response name="success" type="view" value="ShowPlanetManyRelation" />
+
+	</request-map>
+
+
+	<request-map uri="ProcessEntityAccessBSF">
+
+		<response name="success" type="view" value="ProcessEntityAccessBSF" />
+
+	</request-map>
+
+
+	<request-map uri="TestFirstService">
+
+		<event type="service" invoke="learningFirstService" />
+
+		<response name="success" type="view" value="TestFirstService" />
+
+	</request-map>
+
+	<request-map uri="TestFirstServiceOutput">
+
+		<event type="service" invoke="learningFirstService" />
+
+		<response name="success" type="view" value="TestFirstServiceOutput" />
+
+	</request-map>
+
+	<request-map uri="exampleSendEmail">
+
+		<event type="java" path="org.ofbiz.learning.learning.LearningEvents"
+			invoke="exampleSendEmail" />
+
+		<response name="success" type="view" value="goodScreen" />
+
+		<response name="error" type="view" value="badScreen" />
+
+	</request-map>
+
+
+	<!-- end of request mappings -->
+
+
+	<!-- View Mappings -->
+	<view-map name="SimplestScreen" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#SimplestScreenWithMenu" />
+	<view-map name="ConditionalScreen" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#ConditionalScreenWithMenu" />
+	<view-map name="ConditionalScreenWithBsh" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#ConditionalScreenWithBsh" />
+	<view-map name="NestedSections" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#NestedSectionsWithMenu" />
+	<view-map name="CompoundedScreen" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#CompoundedScreenWithMenu" />
+	<view-map name="GlobalContext" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#GlobalContext" />
+	<view-map name="OneFormScreen" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#OneFormScreen" />
+	<view-map name="ListFormScreen" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#ListFormScreen" />
+	<view-map name="MultiFormScreen" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#MultiFormScreen" />
+	<view-map name="TwoTargetFormScreen" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#TwoTargetFormScreen" />
+	<view-map name="RowMutatingFormScreen" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#RowMutatingFormScreen" />
+	<view-map name="main" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#SimplestScreenWithMenu" />
+
+	<view-map name="login" type="screen"
+		page="component://learning/widget/learning/CommonScreens.xml#login" />
+
+	<view-map name="forceToHttps" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#forceToHttps" />
+
+	<view-map name="withAuth" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#withAuth" />
+
+	<view-map name="noDirectRequest" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#noDirectRequest" />
+
+	<view-map name="goodScreen" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#goodScreen" />
+
+	<view-map name="badScreen" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#badScreen" />
+
+	<view-map name="reqRedirectTarget" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#reqRedirectTarget" />
+
+	<view-map name="ShowPlanetManyRelation" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#ShowPlanetManyRelation" />
+
+	<view-map name="ProcessEntityAccessBSF" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#ProcessEntityAccessBSF" />
+
+	<view-map name="TestFirstService" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#TestFirstService" />
+
+	<view-map name="TestFirstServiceOutput" type="screen"
+		page="component://learning/widget/learning/LearningScreens.xml#TestFirstServiceOutput" />
+
+
+	<!-- end of view mappings -->
+
+</site-conf>
+

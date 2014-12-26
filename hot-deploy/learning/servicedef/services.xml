@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/services.xsd">
+
+	<description>Learning Component Services</description>
+
+	<service name="learningFirstService" engine="java"
+		location="org.ofbiz.learning.learning.LearningServices" invoke="handleParameters">
+
+		<description>Our First Service</description>
+
+		<attribute name="firstName" type="String" mode="IN"
+			optional="true" />
+
+		<attribute name="lastName" type="String" mode="IN" optional="true" />
+
+		<attribute name="planetId" type="String" mode="IN" optional="true" />
+
+		<attribute name="fullName" type="String" mode="OUT"
+			optional="true" />
+
+	</service>
+
+</services>
+

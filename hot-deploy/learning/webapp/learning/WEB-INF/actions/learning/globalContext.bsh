@@ -1,0 +1,6 @@
+globalContext = context.get("globalContext");
+
+globalContext.put("global2", "Global Value B");
+
+context.put("local2", "Local Value b");
+

@@ -1,0 +1,12 @@
+String fieldName = "tabButtonItem";
+
+if ("true".equalsIgnoreCase(request.getParameter("show"))) {
+
+    context.put(fieldName, "SimplestScreen");
+
+}else {
+
+    context.put(fieldName, "AnotherSimpleScreen");
+
+}
+

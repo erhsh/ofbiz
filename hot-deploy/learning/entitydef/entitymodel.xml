@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/entitymodel.xsd">
+
+	<entity entity-name="Planet" package-name="org.ofbiz.learning">
+
+		<field name="planetId" type="id-ne" />
+
+		<field name="planetName" type="name" />
+
+		<field name="fromDate" type="date-time" />
+
+		<field name="thruDate" type="date-time" />
+
+		<prim-key field="planetId" />
+
+		<index name="PLANET_NAME_IDX" unique="true">
+
+			<index-field name="planetName" />
+
+		</index>
+
+	</entity>
+
+</entitymodel>
+

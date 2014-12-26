@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/widget-menu.xsd">
+
+	<menu name="TopMenu">
+		<menu-item name="SimplestScreen" title="Simplest Screen">
+
+			<link target="SimplestScreen" />
+
+		</menu-item>
+
+		<menu-item name="ConditionalScreen" title="Conditional Screen">
+
+			<link target="ConditionalScreen" />
+
+		</menu-item>
+
+		<menu-item name="NestedSections" title="Nested Sections">
+
+			<link target="NestedSections" />
+
+		</menu-item>
+		<menu-item name="CompoundedScreen " title="Compound Sections">
+
+			<link target="CompoundedScreen" />
+
+		</menu-item>
+
+
+	</menu>
+
+	<menu name="ConditionalScreenSubMenu">
+
+		<menu-item name="showWidgets" title="Show &lt;widgets&gt;">
+
+			<condition>
+
+				<if-compare field="parameters.show" operator="not-equals"
+					value="widgets" />
+
+			</condition>
+
+			<link target="ConditionalScreen?show=widgets" />
+
+		</menu-item>
+
+		<menu-item name="showFailWidgets" title="Show &lt;fail-widgets&gt;">
+
+			<condition>
+
+				<if-compare field="parameters.show" operator="equals"
+					value="widgets" />
+
+			</condition>
+
+			<link target="ConditionalScreen" />
+
+		</menu-item>
+
+	</menu>
+
+	<menu name="NestedSectionsMenu">
+
+		<actions>
+
+			<script
+				location="component://learning/webapp/learning/WEB-INF/actions/learning/nestedSectionsMenu.bsh" />
+
+		</actions>
+
+		<menu-item name="OuterTrueInnerTrue" title="Outer true -- Inner true">
+
+			<link target="NestedSections?outer=true&amp;inner=true" />
+
+		</menu-item>
+
+		<menu-item name="OuterTrueInnerFalse" title="Outer true -- Inner false">
+
+			<link target="NestedSections?outer=true&amp;inner=false" />
+
+		</menu-item>
+
+		<menu-item name="OuterFalseInnerTrue" title="Outer false -- Inner true">
+
+			<link target="NestedSections?outer=false&amp;inner=true" />
+
+		</menu-item>
+
+		<menu-item name="OuterFalseInnerFalse" title="Outer false -- Inner false">
+
+			<link target="NestedSections?outer=false&amp;inner=false" />
+
+		</menu-item>
+
+	</menu>
+
+	<menu name="CompoundedMenu">
+
+		<actions>
+
+			<script
+				location="component://learning/webapp/learning/WEB-INF/actions/learning/CompoundedMenu.bsh" />
+
+		</actions>
+
+		<menu-item name="SimplestScreen" title="SimplestScreen">
+
+			<link target="CompoundedScreen?show=true" />
+
+		</menu-item>
+
+		<menu-item name="AnotherSimpleScreen" title="AnotherSimpleScreen">
+
+			<link target="CompoundedScreen?show=false" />
+
+		</menu-item>
+
+	</menu>
+
+
+
+</menus>
+

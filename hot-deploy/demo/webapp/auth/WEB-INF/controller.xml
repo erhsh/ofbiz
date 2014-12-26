@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/site-conf.xsd">
+
+	<description>Auth Module Site Configuration File</description>
+
+	<handler name="screen" type="view"
+		class="org.ofbiz.widget.screen.MacroScreenViewHandler" />
+
+	<handler name="java" type="request"
+		class="org.ofbiz.webapp.event.JavaEventHandler" />
+
+	<preprocessor>
+		<event type="java" path="org.ofbiz.webapp.control.LoginWorker"
+			invoke="checkExternalLoginKey" />
+	</preprocessor>
+
+	<request-map uri="goodsview">
+		<response name="success" type="view" value="goodsview" />
+	</request-map>
+
+	<request-map uri="orderview">
+		<security https="true" auth="true" />
+		<response name="success" type="view" value="orderview" />
+	</request-map>
+	<request-map uri="checkLogin" edit="false">
+		<description>Verify a user is logged in. </description>
+		<security https="true" auth="false" />
+		<event type="java" path="org.ofbiz.webapp.control.LoginWorker"
+			invoke="checkLogin" />
+		<response name="success" type="view" value="main" />
+		<response name="error" type="view" value="login" />
+	</request-map>
+	<request-map uri="main">
+		<response name="success" type="view" value="main" />
+	</request-map>
+	<request-map uri="login">
+		<security https="true" auth="false" />
+		<event type="java" path="org.ofbiz.webapp.control.LoginWorker"
+			invoke="login" />
+		<response name="success" type="view" value="main" />
+		<response name="error" type="view" value="login" />
+	</request-map>
+
+	<request-map uri="screenAuthView">
+		<security auth="true"/>
+		<response name="success" type="view" value="screenAuthView" />
+	</request-map>
+
+
+	<view-map name="goodsview" type="screen"
+		page="component://demo/widget/auth/AuthScreens.xml#GoodsView" />
+	<view-map name="orderview" type="screen"
+		page="component://demo/widget/auth/AuthScreens.xml#OrderView" />
+	<view-map name="main" type="screen"
+		page="component://demo/widget/auth/AuthScreens.xml#MainView" />
+	<view-map name="login" type="screen"
+		page="component://demo/widget/auth/CommonScreens.xml#login" />
+
+	<view-map name="screenAuthView" type="screen"
+		page="component://demo/widget/auth/AuthScreens.xml#ScreenAuthView" />
+</site-conf>

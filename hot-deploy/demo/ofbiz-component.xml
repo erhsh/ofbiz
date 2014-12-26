@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ofbiz-component name="demo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/ofbiz-component.xsd">
+
+	<resource-loader name="main" type="component" />
+
+	<classpath type="jar" location="build/lib/*" />
+	<classpath type="dir" location="config" />
+
+	<service-resource type="model" loader="main"
+		location="servicedef/services.xml" />
+
+	<webapp name="hello-world" title="This is a hello-wolrd demo"
+		server="default-server" location="webapp/hello-world" base-permission="NONE"
+		mount-point="/demo/hello-world" />
+
+	<webapp name="auth" title="This is a auth demo" server="default-server"
+		location="webapp/auth" base-permission="OFBTOOLS,AUTH" mount-point="/demo/auth" />
+
+	<webapp name="workflow" server="default-server" location="webapp/workflow"
+		mount-point="/demo/workflow" />
+</ofbiz-component>

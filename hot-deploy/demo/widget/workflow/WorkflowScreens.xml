@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/widget-screen.xsd">
+	<screen name="ChangeOrderStatus">
+		<section>
+			<actions>
+				<set field="firstName" value="cao" />
+				<set field="secondName" value="jian" />
+				<set field="persion.xxx" value="${firstName}" />
+				<set field="persion.yyy" value="${secondName}" />
+			</actions>
+			<widgets>
+				<label>${persion}</label>
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="ChangeOrderStatusError">
+		<section>
+			<widgets>
+				<label text="ChangeOrderStatusError" />
+			</widgets>
+		</section>
+	</screen>
+
+</screens>

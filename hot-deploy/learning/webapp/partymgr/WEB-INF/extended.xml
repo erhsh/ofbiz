@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/site-conf.xsd">
+	<handler name="bsf" type="request"
+		class="org.ofbiz.webapp.event.BsfEventHandler" />
+
+	<request-map uri="PostalAddressAdvisory">
+
+		<security https="true" auth="true" />
+
+		<event type="java" path="org.ofbiz.learning.learning.LearningEvents"
+			invoke="postalAddressAdvisory" />
+
+		<response name="isMars" type="view" value="PostalAddressAdvisory" />
+
+		<response name="notMars" type="view" value="editcontactmech" />
+
+	</request-map>
+
+	<view-map name="PostalAddressAdvisory" type="screen"
+		page="component://learning/widget/partymgr/OurPartyScreens.xml#PostalAddressAdvisory" />
+
+</site-conf>
+

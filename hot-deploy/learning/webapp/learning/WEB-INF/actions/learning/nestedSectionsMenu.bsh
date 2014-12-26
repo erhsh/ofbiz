@@ -1,0 +1,24 @@
+String fieldName = "tabButtonItem";
+
+if ("true".equalsIgnoreCase(request.getParameter("outer"))) {
+
+   if ("true".equalsIgnoreCase(request.getParameter("inner")))
+
+       context.put(fieldName, "OuterTrueInnerTrue");
+
+   else
+
+       context.put(fieldName, "OuterTrueInnerFalse");
+
+}else {
+
+   if ("true".equalsIgnoreCase(request.getParameter("inner")))
+
+       context.put(fieldName, "OuterFalseInnerTrue");
+
+   else
+
+       context.put(fieldName, "OuterFalseInnerFalse");
+
+}
+

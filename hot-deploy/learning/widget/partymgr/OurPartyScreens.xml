@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/widget-screen.xsd">
+
+	<screen name="PostalAddressAdvisory">
+
+		<section>
+
+			<actions>
+
+				<set field="titleProperty" value="PageTitleEditContactMech" />
+
+				<set field="headerItem" value="find" />
+
+				<set field="tabButtonItem" value="editcontactmech" />
+
+				<set field="labelTitleProperty" value="PageTitleEditContactMech" />
+
+				<script
+					location="component://party/webapp/partymgr/WEB-INF/actions/party/EditContactMech.groovy" />
+
+			</actions>
+
+			<widgets>
+
+				<decorator-screen name="main-decorator"
+					location="${parameters.mainDecoratorLocation}">
+
+					<decorator-section name="body">
+
+						<section>
+
+							<widgets>
+
+								<platform-specific>
+
+									<html>
+
+										<html-template
+											location="component://learning/webapp/partymgr/party/postaladdressadvisory.ftl" />
+
+									</html>
+
+								</platform-specific>
+
+							</widgets>
+
+						</section>
+
+					</decorator-section>
+
+				</decorator-screen>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="editcontactmech.extend">
+
+		<section>
+
+			<widgets>
+
+				<platform-specific>
+					<html>
+
+						<html-template
+							location="component://learning/webapp/partymgr/party/editcontactmech.extend.ftl" />
+
+					</html>
+				</platform-specific>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+	<screen name="editcontactmech.planet.dropdown">
+
+		<section>
+
+			<actions>
+
+				<entity-one entity-name="Planet" value-field="planet">
+
+					<field-map field-name="planetId" value="mechMap.postalAddress.planet" />
+
+				</entity-one>
+
+				<entity-condition entity-name="Planet"
+					filter-by-date="true" list="planets" >
+
+					<order-by field-name="planetName" />
+
+				</entity-condition>
+
+			</actions>
+
+			<widgets>
+
+				<platform-specific>
+
+					<html>
+
+						<html-template
+							location="component://learning/webapp/partymgr/party/editcontactmech.planet.dropdown.ftl" />
+
+					</html>
+
+				</platform-specific>
+
+			</widgets>
+
+		</section>
+
+	</screen>
+
+
+</screens>
+
