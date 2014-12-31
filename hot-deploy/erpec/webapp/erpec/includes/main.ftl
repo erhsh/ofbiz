@@ -32,7 +32,7 @@ BUI.use('common/main',function(){
         menu:[{
             text:'首页',
             items:[
-              {id:'homepage',text:'首页',href:'main/menu.html',closeable:false},
+              {id:'homepage',text:'首页',href:'https://localhost:8443/assets/main/code.html',closeable:false},
             ]
           }]
       },{

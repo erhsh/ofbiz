@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE file 
+    distributed with this work for additional information regarding copyright ownership. The ASF licenses this file to you under 
+    the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may 
+    obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to 
+    in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+    ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under 
+    the License. -->
+
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+    <!-- ========================================================= -->
+    <!-- ======================== Defaults ======================= -->
+    <!-- ========================================================= -->
+    <title>Entity of an Open For Business Project Component</title>
+    <description>None</description>
+    <version>1.0</version>
+
+    <!-- ========================================================= -->
+    <!-- ======================== Data Model ===================== -->
+    <!-- The modules in this file are as follows: -->
+    <!-- - org.ofbiz.erpec.users -->
+    <!-- - org.ofbiz.erpec.goods -->
+    <!-- - org.ofbiz.erpec.storehouse -->
+    <!-- - org.ofbiz.erpec.distributor -->
+    <!-- - org.ofbiz.erpec.task -->
+    <!-- ========================================================= -->
+
+
+    <!-- ========================================================= -->
+    <!-- org.ofbiz.erpec.users -->
+    <!-- ========================================================= -->
+    <entity entity-name="SecurityGroupType" package-name="org.ofbiz.erpec.users" title="SecurityGroupType Entity">
+        <field name="securityGroupTypeId" type="id-ne"></field>
+        <field name="parentTypeId" type="id"></field>
+        <field name="description" type="long-varchar"></field>
+        <prim-key field="securityGroupTypeId" />
+        <relation type="one" fk-name="SEC_GRP_TYPE_PAR" title="Parent" rel-entity-name="SecurityGroupType">
+            <key-map field-name="parentTypeId" rel-field-name="securityGroupTypeId" />
+        </relation>
+    </entity>
+
+    <entity entity-name="SecurityGroupRelationship" package-name="org.ofbiz.erpec.users" title="SecurityGroupRelationship Entity">
+        <field name="securityGroupTypeId" type="id-ne"></field>
+        <field name="groupId" type="id-ne"></field>
+        <prim-key field="securityGroupTypeId" />
+        <prim-key field="groupId" />
+        <relation type="one" rel-entity-name="SecurityGroup">
+            <key-map field-name="groupId" />
+        </relation>
+        <relation type="one" rel-entity-name="SecurityGroupType">
+            <key-map field-name="securityGroupTypeId" />
+        </relation>
+    </entity>
+
+    <view-entity entity-name="SecurityGroupTypeGroupView" package-name="org.ofbiz.erpec.users"
+        title="Show all security group with group type">
+        <member-entity entity-alias="TYP" entity-name="SecurityGroupType" />
+        <member-entity entity-alias="REL" entity-name="SecurityGroupRelationship" />
+        <member-entity entity-alias="GRP" entity-name="SecurityGroup" />
+        <alias entity-alias="TYP" name="securityGroupTypeId"/>
+        <alias entity-alias="TYP" name="typeDesc" field="description"/>
+        <alias entity-alias="GRP" name="groupId" />
+        <alias entity-alias="GRP" name="grpDesc" field="description" />
+        
+        <view-link entity-alias="TYP" rel-entity-alias="REL">
+            <key-map field-name="securityGroupTypeId" rel-field-name="securityGroupTypeId" />
+        </view-link>
+        <view-link entity-alias="REL" rel-entity-alias="GRP">
+            <key-map field-name="groupId" rel-field-name="groupId" />
+        </view-link>
+    </view-entity>
+</entitymodel>
