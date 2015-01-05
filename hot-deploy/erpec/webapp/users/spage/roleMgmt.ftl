@@ -29,10 +29,13 @@
           <div class="control-group span8">
             <label class="control-label"><s>*</s>业务分组：</label>
             <div class="controls">
-              <select data-rules="{required:true}"  name="type" class="input-normal"> 
-                <option value="">请选择</option>
-                <option value="zou">走读</option>
-                <option value="zhu">住校</option>
+              <select data-rules="{required:true}" name="roleGrp" class="input-normal"> 
+                <option value="">请选择</option>              
+                <#list securityGroupTypes as securityGroupType>
+					<#list securityGroupType.childTypes as childType>
+						<option value="${childType.securityGroupTypeId}">${securityGroupType.description}>${childType.description}</option>
+					</#list>
+				</#list>
               </select>
             </div>
           </div>
@@ -40,8 +43,10 @@
         <div class="row">
           <div class="control-group span15 ">
             <label class="control-label">角色权限：</label>
-            <div id="range" class="controls bui-form-group" data-rules="{dateRange : true}">
-              选择权限
+            <div id="range" class="controls bui-form-group" data-rules="{dateRange : true}" style="width: 460px; height: 200px; overflow: scroll;">
+              <#list securityPermissions as securityPermission>
+              <label><input name="rolePermNum" type="checkbox" value="${securityPermission.permissionId}"/>${securityPermission.description}</label><br/>
+              </#list>
             </div>
           </div>
         </div>

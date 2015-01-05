@@ -77,7 +77,7 @@ BUI.use('common/main',function(){
         menu : [{
             text:'用户管理',
             items:[
-              {id:'role-manage',text:'角色管理',href:'/erpec/users/control/roleMgmt',closeable:false}
+              {id:'role-manage',text:'角色管理',href:'/erpec/users/control/viewRoles',closeable:false}
               ,{id:'user-manage',text:'用户管理',href:'/erpec/users/control/userMgmt'}
               ,{id:'profile',text:'个人信息',href:'/erpec/users/control/profile'}
             ]

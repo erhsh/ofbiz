@@ -1,7 +1,7 @@
 import org.ofbiz.entity.GenericDelegator
 import org.ofbiz.entity.condition.EntityCondition
 import org.ofbiz.entity.condition.EntityOperator
-import org.ofbiz.erpec.models.SecurityGroupType
+import org.ofbiz.erpec.pojo.SecurityGroupType
 
 /**
  * @tile 查找安全组分类

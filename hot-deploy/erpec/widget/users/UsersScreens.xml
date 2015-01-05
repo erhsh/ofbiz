@@ -5,6 +5,7 @@
         <section>
             <actions>
                 <script location="component://erpec/webapp/users/WEB-INF/actions/SecurityGroupTypeList.groovy" />
+                <script location="component://erpec/webapp/users/WEB-INF/actions/SecurityPermissionList.groovy" />
                 <script location="component://erpec/webapp/users/WEB-INF/actions/RoleList.groovy" />
             </actions>
             <widgets>
@@ -17,6 +18,40 @@
                         </platform-specific>
                     </decorator-section>
                 </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="viewRoles">
+        <section>
+            <actions>
+                <script location="component://erpec/webapp/users/WEB-INF/actions/SecurityGroupTypeList.groovy" />
+                <script location="component://erpec/webapp/users/WEB-INF/actions/SecurityPermissionList.groovy" />
+            </actions>
+            <widgets>
+                <decorator-screen name="main-content-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <platform-specific>
+                            <html>
+                                <html-template location="component://erpec/webapp/users/spage/viewRoles.ftl" />
+                            </html>
+                        </platform-specific>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    <screen name="AjaxRoleList">
+        <section>
+            <actions>
+                <script location="component://erpec/webapp/users/WEB-INF/actions/RoleList.groovy" />
+            </actions>
+            <widgets>
+                <platform-specific>
+                    <html>
+                        <html-template location="component://erpec/webapp/users/spage/ajaxRoleList.ftl" />
+                    </html>
+                </platform-specific>
             </widgets>
         </section>
     </screen>
