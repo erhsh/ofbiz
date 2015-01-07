@@ -1,26 +1,4 @@
 <div class="container">
-	<div class="row">
-      <form id="searchForm" class="form-horizontal span24">
-        <div class="row">
-          <div class="control-group span8">
-            <label class="control-label">业务分组：</label>
-            <div class="controls">
-              <select name="roleGrpId" class="input-normal"> 
-                <option value="">请选择</option>              
-                <#list securityGroupTypeVOs as securityGroupTypeVO>
-					<#list securityGroupTypeVO.childTypes as childType>
-						<option value="${childType.securityGroupTypeId}">${securityGroupTypeVO.description}>${childType.description}</option>
-					</#list>
-				</#list>
-              </select>
-            </div>
-          </div>
-          <div class="span3 offset2">
-            <button type="button" id="btnSearch" class="button button-primary">搜索</button>
-          </div>
-        </div>
-      </form>
-    </div>
     <div class="search-grid-container">
       <div id="grid"></div>
     </div>
@@ -30,39 +8,38 @@
       <form id="J_Form" class="form-horizontal" action="../data/edit.php?a=1">
       	<div class="row">
           <div class="control-group span8">
-            <label class="control-label"><s>*</s>角色标识：</label>
+            <label class="control-label"><s>*</s>账号：</label>
             <div class="controls">
-              <input name="roleId" type="text" data-rules="{required:true}" class="input-normal control-text">
+              <input name="userLoginId" type="text" class="input-normal control-text">
+            </div>
+          </div>
+          <div class="control-group span8">
+            <label class="control-label"><s>*</s>姓名：</label>
+            <div class="controls">
+              <input name="userName" type="text" class="input-normal control-text">
             </div>
           </div>
         </div>
         <div class="row">
           <div class="control-group span8">
-            <label class="control-label"><s>*</s>角色名称：</label>
+            <label class="control-label"><s>*</s>身份证：</label>
             <div class="controls">
-              <input name="roleName" type="text" data-rules="{required:true}" class="input-normal control-text">
+              <input name="userCardId" type="text" class="input-normal control-text">
             </div>
           </div>
-          <div class="control-group span8">
-            <label class="control-label"><s>*</s>业务分组：</label>
+          <div class="control-group span8 ">
+            <label class="control-label">联系方式：</label>
             <div class="controls">
-              <select data-rules="{required:true}" name="roleGrp" class="input-normal"> 
-                <option value="">请选择</option>              
-                <#list securityGroupTypeVOs as securityGroupTypeVO>
-					<#list securityGroupTypeVO.childTypes as childType>
-						<option value="${childType.securityGroupTypeId}">${securityGroupTypeVO.description}>${childType.description}</option>
-					</#list>
-				</#list>
-              </select>
+              <input name="userTelNum" type="text" class="input-normal control-text">
             </div>
           </div>
         </div>
         <div class="row">
           <div class="control-group span15 ">
-            <label class="control-label">角色权限：</label>
+            <label class="control-label">角色：</label>
             <div id="range" class="controls bui-form-group" style="width: 460px; height: 200px; overflow: scroll;">
-              <#list securityPermissionVOs as securityPermissionVO>
-              <label><input name="${securityPermissionVO.permissionId}_perm" type="checkbox" value="${securityPermissionVO.permissionId}"/>${securityPermissionVO.description}</label><br/>
+              <#list roleVOs as roleVO>
+              <label><input name="${roleVO.roleId}_role" type="checkbox" value="${roleVO.roleId}"/>${roleVO.roleDesc?if_exists}</label><br/>
               </#list>
             </div>
           </div>
@@ -71,7 +48,7 @@
           <div class="control-group span15">
             <label class="control-label">描述：</label>
             <div class="controls control-row4">
-              <textarea name="roleDesc" class="input-large" type="text"></textarea>
+              <textarea name="userDesc" class="input-large" type="text"></textarea>
             </div>
           </div>
         </div>
@@ -101,11 +78,12 @@
         triggerCls : 'btn-edit'
       }),
       columns = [
-          {title:'角色编号',dataIndex:'roleId',width:150},
-          {title:'角色名称',dataIndex:'roleName',width:200},
-          {title:'业务分组',dataIndex:'roleGrp',width:200},
-          {title:'角色描述',dataIndex:'roleDesc',width:400},
-          {title:'状态',dataIndex:'roleStat',width:50},
+          {title:'账号',dataIndex:'userLoginId',width:150},
+          {title:'姓名',dataIndex:'userName',width:150},
+          {title:'身份证号',dataIndex:'userCardId',width:150},
+          {title:'联系方式',dataIndex:'userTelNum',width:100},
+          {title:'描述',dataIndex:'userDesc',width:300},
+          {title:'状态',dataIndex:'userStat',width:100},
           {title:'操作',dataIndex:'',width:100,renderer : function(value,obj){
             var runStr = '<span class="grid-command btn-open" title="启用角色">启用</span>',
               stopStr = '<span class="grid-command btn-close" title="停用角色">停用</span>';
@@ -118,11 +96,11 @@
           }
           }
         ],
-      store = Search.createStore('/erpec/users/control/ajaxRoleLst',{
+      store = Search.createStore('/erpec/users/control/ajaxUserLst',{
         proxy : {
-          save : { //也可以是一个字符串，那么增删改，都会往那么路径提交数据，同时附加参数saveType
-            addUrl : '/erpec/users/control/ajaxRoleAdd',
-            updateUrl : '/erpec/users/control/ajaxRoleEdt',
+          save : { 
+            addUrl : '/erpec/users/control/ajaxUserAdd',
+            updateUrl : '/erpec/users/control/ajaxUserEdt',
             removeUrl : '../data/del.php'
           },
           method : 'POST'

@@ -8,6 +8,7 @@ import java.util.Map;
 import javolution.util.FastMap;
 
 import org.ofbiz.base.util.Debug;
+import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.entity.Delegator;
@@ -16,6 +17,8 @@ import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.condition.EntityCondition;
 import org.ofbiz.entity.condition.EntityOperator;
 import org.ofbiz.erpec.pojo.RoleVO;
+import org.ofbiz.erpec.pojo.UserInfoVO;
+import org.ofbiz.party.contact.ContactMechWorker;
 import org.ofbiz.service.DispatchContext;
 import org.ofbiz.service.ServiceUtil;
 
@@ -23,154 +26,6 @@ public class UserServices {
 	public static final String module = UserServices.class.getName();
 	public static final String resource = "PartyUiLabels";
 	public static final String resourceError = "PartyErrorUiLabels";
-
-	/**
-	 * 创建权限组（角色）
-	 * 
-	 * @param dctx
-	 * @param context
-	 * @return
-	 */
-	public static Map<String, Object> createSecurityGroup(DispatchContext dctx,
-			Map<String, ? extends Object> context) {
-		Map<String, Object> result = FastMap.newInstance();
-		Delegator delegator = dctx.getDelegator();
-		Locale locale = (Locale) context.get("locale");
-		GenericValue securityGroup = null;
-		try {
-			// 创建权限组
-			securityGroup = delegator.makeValue("SecurityGroup");
-			securityGroup.setPKFields(context);
-			securityGroup.setNonPKFields(context);
-			securityGroup = delegator.create(securityGroup);
-
-			// 关联权限
-			String permissionIdStr = (String) context.get("permissionIdStr");
-			String[] permissionIds = new String[0];
-			if (null != permissionIdStr) {
-				permissionIds = permissionIdStr.split(",");
-			}
-			for (String permissionId : permissionIds) {
-				GenericValue securityGroupPermission = delegator
-						.makeValue("SecurityGroupPermission");
-				securityGroupPermission.setPKFields(context);
-				securityGroupPermission.set("permissionId", permissionId);
-				delegator.create(securityGroupPermission);
-			}
-
-		} catch (GenericEntityException e) {
-			Debug.logError(e, module);
-			return ServiceUtil.returnError(UtilProperties.getMessage(resource,
-					"PartyCannotCreateRoleTypeEntity",
-					UtilMisc.toMap("errMessage", e.getMessage()), locale));
-		}
-		if (securityGroup != null) {
-			result.put("securityGroup", securityGroup);
-		}
-		return result;
-	}
-
-	/**
-	 * 更新权限组（角色）
-	 * 
-	 * @param dctx
-	 * @param context
-	 * @return
-	 */
-	public static Map<String, Object> updateSecurityGroup(DispatchContext dctx,
-			Map<String, ? extends Object> context) {
-		Map<String, Object> result = FastMap.newInstance();
-		Delegator delegator = dctx.getDelegator();
-		Locale locale = (Locale) context.get("locale");
-		GenericValue securityGroup = null;
-		try {
-			// 更新权限组
-			String groupId = (String) context.get("groupId");
-			securityGroup = delegator.findOne("SecurityGroup",
-					UtilMisc.toMap("groupId", groupId), false);
-			securityGroup.setNonPKFields(context);
-			securityGroup.store();
-
-			// 更新关联权限
-			String permissionIdStr = (String) context.get("permissionIdStr");
-			String[] permissionIds = new String[0];
-			if (null != permissionIdStr) {
-				permissionIds = permissionIdStr.split(",");
-			}
-			EntityCondition cond = EntityCondition.makeCondition("groupId",
-					EntityOperator.EQUALS, groupId);
-			List<GenericValue> permissions = delegator.findList(
-					"SecurityGroupPermission", cond, null, null, null, false);
-
-			// 找出添加的权限
-			List<String> addPermissionIds = new ArrayList<String>();
-			boolean isAdd = true;
-			for (String permissionId : permissionIds) {
-				isAdd = true;
-				for (GenericValue permission : permissions) {
-					String oldPermissionId = (String) permission
-							.get("permissionId");
-					// 不用添加的权限
-					if (oldPermissionId.equals(permissionId)) {
-						isAdd = false;
-						break;
-					}
-				}
-
-				if (isAdd) {
-					addPermissionIds.add(permissionId);
-				}
-			}
-
-			// 找出删除的权限
-			List<String> delPermissionIds = new ArrayList<String>();
-			boolean isDel;
-			for (GenericValue permission : permissions) {
-				isDel = true;
-				String oldPermissionId = (String) permission
-						.get("permissionId");
-				for (String permissionId : permissionIds) {
-					// 不用刪除的权限
-					if (permissionId.equals(oldPermissionId)) {
-						isDel = false;
-						break;
-					}
-				}
-				if (isDel) {
-					delPermissionIds.add(oldPermissionId);
-				}
-
-			}
-
-			for (String addPermissionId : addPermissionIds) {
-				GenericValue securityGroupPermission = delegator
-						.makeValue("SecurityGroupPermission");
-				securityGroupPermission.set("groupId", groupId);
-				securityGroupPermission.set("permissionId", addPermissionId);
-				securityGroupPermission.create();
-			}
-
-			for (String delPermissionId : delPermissionIds) {
-
-				GenericValue securityGroupPermission = delegator.findOne(
-						"SecurityGroupPermission", UtilMisc.toMap("groupId",
-								groupId, "permissionId", delPermissionId),
-						false);
-
-				securityGroupPermission.remove();
-			}
-
-		} catch (GenericEntityException e) {
-			Debug.logError(e, module);
-			return ServiceUtil.returnError(UtilProperties.getMessage(resource,
-					"PartyCannotCreateRoleTypeEntity",
-					UtilMisc.toMap("errMessage", e.getMessage()), locale));
-		}
-		if (securityGroup != null) {
-			result.put("securityGroup", securityGroup);
-		}
-		return result;
-	}
 
 	public static Map<String, Object> roleLst(DispatchContext dctx,
 			Map<String, ? extends Object> context) {
@@ -212,7 +67,7 @@ public class UserServices {
 					UtilMisc.toMap("errMessage", e.getMessage()), locale));
 		}
 		result.put("rows", roleVOs);
-		result.put("results", 40);
+		result.put("results", roleVOs.size());
 		return result;
 
 	}
@@ -414,6 +269,176 @@ public class UserServices {
 
 		result = ServiceUtil.returnSuccess();
 		return result;
+	}
+
+	public static Map<String, Object> userLst(DispatchContext dctx,
+			Map<String, ? extends Object> context) {
+		Map<String, Object> result = FastMap.newInstance();
+		List<UserInfoVO> userInfoVOs = new ArrayList<UserInfoVO>();
+		Locale locale = (Locale) context.get("locale");
+		Delegator delegator = dctx.getDelegator();
+		List<GenericValue> userLogins;
+		try {
+
+			userLogins = delegator
+					.findList("UserLogin", null,
+							UtilMisc.toSet("partyId", "userLoginId"), null,
+							null, false);
+
+			for (GenericValue userLogin : userLogins) {
+				String partyId = userLogin.getString("partyId");
+				if (null == partyId || "".equals(partyId)) {
+					continue;
+				}
+
+				// 登录账号
+				UserInfoVO userInfoVO = new UserInfoVO();
+				userInfoVO.setUserId(partyId);
+				userInfoVO.setUserLoginId(userLogin.getString("userLoginId"));
+
+				// 用户ID， 描述
+				GenericValue party = userLogin.getRelatedOne("Party", false);
+				if (null != party) {
+					userInfoVO.setUserId(party.getString("partyId"));
+					userInfoVO.setUserDesc(party.getString("description"));
+				}
+
+				// 用户状态
+				GenericValue statusItem = party.getRelatedOne("StatusItem",
+						false);
+				if (null != statusItem) {
+					userInfoVO.setUserStat(statusItem.getString("description"));
+				}
+
+				// 用户名，身份证号
+				GenericValue person = party.getRelatedOne("Person", false);
+				if (null != person) {
+					userInfoVO.setUserName(person.getString("firstName")
+							+ person.getString("lastName"));
+					userInfoVO.setUserCardId(person.getString("cardId"));
+				}
+
+				// 联系方式
+				userInfoVO.setUserTelNum(getTeleNum(delegator, partyId));
+
+				userInfoVOs.add(userInfoVO);
+			}
+
+		} catch (GenericEntityException e) {
+			Debug.logError(e, module);
+			e.printStackTrace();
+
+			return ServiceUtil.returnError(UtilProperties.getMessage(resource,
+					"PartyCannotCreateRoleTypeEntity",
+					UtilMisc.toMap("errMessage", e.getMessage()), locale));
+		}
+		result.put("rows", userInfoVOs);
+		result.put("results", userInfoVOs.size());
+		return result;
 
 	}
+
+	private static String getTeleNum(Delegator delegator, String partyId) {
+		String result = "";
+		List<Map<String, Object>> contacts = ContactMechWorker
+				.getPartyContactMechValueMaps(delegator, partyId, false,
+						"TELECOM_NUMBER");
+
+		for (Map<String, Object> contact : contacts) {
+			GenericValue telecomNumber = (GenericValue) contact
+					.get("telecomNumber");
+			if (null != telecomNumber) {
+				result = telecomNumber.getString("contactNumber");
+			}
+		}
+
+		return result;
+	}
+
+	public static Map<String, Object> userAdd(DispatchContext dctx,
+			Map<String, ? extends Object> context) {
+		Map<String, Object> result = FastMap.newInstance();
+		Locale locale = (Locale) context.get("locale");
+		Delegator delegator = dctx.getDelegator();
+
+		try {
+			String userLoginId = (String) context.get("userLoginId");
+			String userName = (String) context.get("userName");
+			String userCardId = (String) context.get("userCardId");
+			String userTelNum = (String) context.get("userTelNum");
+			String userDesc = (String) context.get("userDesc");
+			Object userRoles = context.get("userRoles");
+
+			List<?> userRoleIds = null;
+			if (userRoleIds instanceof List<?>) {
+				userRoleIds = (List<?>) userRoles;
+			}
+
+			// 创建团体
+			String partyId = delegator.getNextSeqId("Party"); // 用户Id，很多表的关联外键
+			GenericValue party = delegator.makeValue("Party");
+			party.set("partyId", partyId);
+			party.set("description", userDesc);
+			party.set("partyTypeId", "PERSON");
+			delegator.create(party);
+
+			// 创建人员团体
+			GenericValue person = delegator.makeValue("Person");
+			person.set("partyId", partyId);
+			person.set("firstName", userName);
+			person.set("cardId", userCardId);
+			delegator.create(person);
+
+			// 创建登录
+			GenericValue userLogin = delegator.makeValue("UserLogin");
+			userLogin.set("userLoginId", userLoginId);
+			userLogin.set("partyId", partyId);
+			delegator.create(userLogin);
+
+			// 创建联系方式
+			String contactMechId = delegator.getNextSeqId("ContactMech");
+			GenericValue contactMech = delegator.makeValue("ContactMech");
+			contactMech.set("contactMechId", contactMechId);
+			contactMech.set("contactMechTypeId", "TELECOM_NUMBER");
+			delegator.create(contactMech);
+
+			// 创建电话联系
+			GenericValue telecomNumber = delegator.makeValue("TelecomNumber");
+			telecomNumber.set("contactMechId", contactMechId);
+			telecomNumber.set("contactNumber", userTelNum);
+			delegator.create(telecomNumber);
+
+			// 创建团体与联系方式的关联关系
+			GenericValue partyContactMech = delegator
+					.makeValue("PartyContactMech");
+			partyContactMech.set("partyId", partyId);
+			partyContactMech.set("contactMechId", contactMechId);
+			partyContactMech.set("fromDate", UtilDateTime.nowTimestamp());
+			delegator.create(partyContactMech);
+
+			// 关联角色
+			if (null != userRoleIds) {
+				for (Object userRoleId : userRoleIds) {
+					GenericValue userLoginSecurityGroup = delegator
+							.makeValue("UserLoginSecurityGroup");
+					userLoginSecurityGroup.set("userLoginId", userLoginId);
+					userLoginSecurityGroup.set("groupId", userRoleId);
+					delegator.create(userLoginSecurityGroup);
+				}
+			}
+
+		} catch (GenericEntityException e) {
+			Debug.logError(e, module);
+			e.printStackTrace();
+
+			return ServiceUtil.returnError(UtilProperties.getMessage(resource,
+					"PartyCannotCreateRoleTypeEntity",
+					UtilMisc.toMap("errMessage", e.getMessage()), locale));
+		}
+
+		result = ServiceUtil.returnSuccess();
+		return result;
+
+	}
+
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE file 
+    distributed with this work for additional information regarding copyright ownership. The ASF licenses this file to you under 
+    the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may 
+    obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to 
+    in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+    ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under 
+    the License. -->
+
+<simple-methods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/simple-methods-v2.xsd">
+    <simple-method method-name="test123">
+    </simple-method>
+
+    <simple-method method-name="test" login-required="false" short-description="test simple method">
+
+        <entity-condition list="userInfos" entity-name="UserLogin">
+            <limit-view view-size="1" view-index="1" />
+        </entity-condition>
+
+        <set field="rows" type="List" />
+
+        <iterate entry="userInfo" list="userInfos">
+            <field-to-list list="rows" field="userInfo" />
+        </iterate>
+
+        <field-to-result field="userLogins" result-name="rows" />
+        <set field="test" type="Integer" value="123" />
+        <field-to-result field="userLogins" result-name="results" />
+    </simple-method>
+</simple-methods>

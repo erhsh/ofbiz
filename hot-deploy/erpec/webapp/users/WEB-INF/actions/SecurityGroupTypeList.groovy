@@ -1,7 +1,7 @@
 import org.ofbiz.entity.GenericDelegator
 import org.ofbiz.entity.condition.EntityCondition
 import org.ofbiz.entity.condition.EntityOperator
-import org.ofbiz.erpec.pojo.SecurityGroupType
+import org.ofbiz.erpec.pojo.SecurityGroupTypeVO
 
 /**
  * @tile 查找安全组分类
@@ -15,35 +15,35 @@ GenericDelegator delegator = delegator;
 
 EntityCondition cond = EntityCondition.makeCondition("parentTypeId", EntityOperator.EQUALS, null);
 sgts = delegator.findList("SecurityGroupType", cond, null, null, null, false);
-List<SecurityGroupType> securityGroupTypes = new ArrayList<SecurityGroupType>();
+List<SecurityGroupTypeVO> securityGroupTypeVOs = new ArrayList<SecurityGroupTypeVO>();
 for (sgt in sgts) {
 
 	// Copy entity
-	SecurityGroupType securityGroupType = new SecurityGroupType();
-	securityGroupType.setSecurityGroupTypeId(sgt.securityGroupTypeId);
-	securityGroupType.setDescription(sgt.description);
+	SecurityGroupTypeVO securityGroupTypeVO = new SecurityGroupTypeVO();
+	securityGroupTypeVO.setSecurityGroupTypeId(sgt.securityGroupTypeId);
+	securityGroupTypeVO.setDescription(sgt.description);
 
 	// deal child
 	EntityCondition ec = EntityCondition.makeCondition("parentTypeId", EntityOperator.EQUALS, sgt.securityGroupTypeId);
 	childSgts = delegator.findList("SecurityGroupType", ec, null, null, null, false);
-	List<SecurityGroupType> childTypes = new ArrayList<SecurityGroupType>();
+	List<SecurityGroupTypeVO> childTypes = new ArrayList<SecurityGroupTypeVO>();
 	for (childSgt in childSgts) {
 
 		// Copy entity
-		SecurityGroupType childType = new SecurityGroupType();
+		SecurityGroupTypeVO childType = new SecurityGroupTypeVO();
 		childType.setSecurityGroupTypeId(childSgt.securityGroupTypeId);
 		childType.setDescription(childSgt.description);
 
 		// add list
 		childTypes.add(childType);
 	}
-	securityGroupType.setChildTypes(childTypes);
+	securityGroupTypeVO.setChildTypes(childTypes);
 
 	// add list
-	securityGroupTypes.add(securityGroupType);
+	securityGroupTypeVOs.add(securityGroupTypeVO);
 }
 
-context.securityGroupTypes = securityGroupTypes;
+context.securityGroupTypeVOs = securityGroupTypeVOs;
 
 
 

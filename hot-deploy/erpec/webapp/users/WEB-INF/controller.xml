@@ -6,31 +6,17 @@
     <handler name="screen" type="view" class="org.ofbiz.widget.screen.MacroScreenViewHandler" />
     <handler name="service" type="request" class="org.ofbiz.webapp.event.ServiceEventHandler" />
 
+    <!-- Request Mapping -->
+
     <request-map uri="json">
         <security direct-request="false" />
         <event type="java" path="org.ofbiz.common.CommonEvents" invoke="jsonResponseFromRequestAttributes" />
         <response name="success" type="none" />
     </request-map>
 
-    <!-- Request Mapping -->
-    <request-map uri="roleMgmt">
-        <response name="success" type="view" value="roleMgmt" />
-    </request-map>
-
+    <!-- 用户-角色 -->
     <request-map uri="viewRoles">
         <response name="success" type="view" value="viewRoles" />
-    </request-map>
-
-    <request-map uri="createSecurityGroup">
-        <event type="service" invoke="createSecurityGroup" />
-        <response name="success" type="view" value="viewRoles" />
-        <response name="error" type="view" value="viewRoles2" />
-    </request-map>
-
-    <request-map uri="updateSecurityGroup">
-        <event type="service" invoke="updateSecurityGroup" />
-        <response name="success" type="view" value="viewRoles" />
-        <response name="error" type="view" value="viewRoles2" />
     </request-map>
 
     <request-map uri="ajaxRoleLst">
@@ -38,29 +24,44 @@
         <response name="success" type="request" value="json" />
         <response name="error" type="request" value="json" />
     </request-map>
-    
+
     <request-map uri="ajaxRoleAdd">
         <event type="service" path="" invoke="roleAdd" />
         <response name="success" type="request" value="json" />
         <response name="error" type="request" value="json" />
     </request-map>
-    
+
     <request-map uri="ajaxRoleEdt">
         <event type="service" path="" invoke="roleEdt" />
         <response name="success" type="request" value="json" />
         <response name="error" type="request" value="json" />
     </request-map>
+    <!-- //用户-角色 -->
 
-    <request-map uri="ajaxRoleList">
-        <response name="success" type="view" value="ajaxRoleList" />
+    <!-- 用户-用户 -->
+    <request-map uri="viewUsers">
+        <response name="success" type="view" value="viewUsers" />
     </request-map>
+
+    <request-map uri="ajaxUserLst">
+        <event type="service" path="" invoke="userLst" />
+        <response name="success" type="request" value="json" />
+        <response name="error" type="request" value="json" />
+    </request-map>
+
+    <request-map uri="ajaxUserAdd">
+        <event type="service" path="" invoke="userAdd" />
+        <response name="success" type="request" value="json" />
+        <response name="error" type="request" value="json" />
+    </request-map>
+    <!-- //用户-用户 -->
+
     <!-- End Request Mapping -->
 
-
     <!-- Request Mapping -->
-    <view-map name="roleMgmt" type="screen" page="component://erpec/widget/users/UsersScreens.xml#RoleMgmt" />
-    <view-map name="viewRoles" type="screen" page="component://erpec/widget/users/UsersScreens.xml#viewRoles" />
-    <view-map name="ajaxRoleList" type="screen" page="component://erpec/widget/users/UsersScreens.xml#AjaxRoleList" />
+    <view-map name="viewRoles" type="screen" page="component://erpec/widget/users/RoleScreens.xml#ViewRoles" />
+    <view-map name="viewUsers" type="screen" page="component://erpec/widget/users/UserScreens.xml#ViewUsers" />
+
     <!-- End Request Mapping -->
 </site-conf>
 	

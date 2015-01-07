@@ -12,23 +12,7 @@
     <vendor>OFBiz</vendor>
     <version>1.0</version>
 
-    <service name="createSecurityGroup" engine="java" location="org.ofbiz.erpec.user.service.UserServices"
-        invoke="createSecurityGroup">
-        <description>Create a new role type</description>
-        <attribute name="groupId" type="String" mode="IN" />
-        <attribute name="description" type="String" mode="IN" optional="true" />
-        <attribute name="permissionIdStr" type="String" mode="IN" optional="true" />
-        <attribute name="securityGroup" type="org.ofbiz.entity.GenericValue" mode="OUT" />
-    </service>
-
-    <service name="updateSecurityGroup" engine="java" location="org.ofbiz.erpec.user.service.UserServices"
-        invoke="updateSecurityGroup">
-        <description>Create a new role type</description>
-        <attribute name="groupId" type="String" mode="IN" />
-        <attribute name="description" type="String" mode="IN" optional="true" />
-        <attribute name="permissionIdStr" type="String" mode="IN" optional="true" />
-        <attribute name="securityGroup" type="org.ofbiz.entity.GenericValue" mode="OUT" />
-    </service>
+    <!-- 角色 -->
     <service name="roleLst" engine="java" location="org.ofbiz.erpec.user.service.UserServices" invoke="roleLst">
         <description>list roles</description>
         <attribute name="roleGrpId" type="String" mode="IN" optional="true" />
@@ -41,7 +25,7 @@
         <attribute name="roleName" type="String" mode="IN" optional="true" />
         <attribute name="roleDesc" type="String" mode="IN" optional="true" />
         <attribute name="roleGrp" type="String" mode="IN" optional="true" />
-        <attribute name="permissionIds" type="List" mode="IN" optional="true" />
+        <attribute name="permissionIds" type="List" mode="IN" optional="true" string-list-suffix="_perm" />
     </service>
     <service name="roleEdt" engine="java" location="org.ofbiz.erpec.user.service.UserServices" invoke="roleEdt">
         <description>edit roles</description>
@@ -49,7 +33,42 @@
         <attribute name="roleName" type="String" mode="IN" optional="true" />
         <attribute name="roleDesc" type="String" mode="IN" optional="true" />
         <attribute name="roleGrp" type="String" mode="IN" optional="true" />
-        <attribute name="permissionIds" type="List" mode="IN" optional="true" string-list-suffix="_perm"/>
+        <attribute name="permissionIds" type="List" mode="IN" optional="true" string-list-suffix="_perm" />
+    </service>
+
+    <!-- 用户 -->
+    <service name="userLst" engine="java" location="org.ofbiz.erpec.user.service.UserServices" invoke="userLst">
+        <description>user roles</description>
+        <attribute name="roleGrpId" type="String" mode="IN" optional="true" />
+        <attribute name="rows" type="List" mode="OUT" optional="true" />
+        <attribute name="results" type="Integer" mode="OUT" optional="true" />
+    </service>
+    <service name="userAdd" engine="java" location="org.ofbiz.erpec.user.service.UserServices" invoke="userAdd">
+        <description>add user</description>
+        <attribute name="userLoginId" type="String" mode="IN" optional="true" />
+        <attribute name="userName" type="String" mode="IN" optional="true" />
+        <attribute name="userCardId" type="String" mode="IN" optional="true" />
+        <attribute name="userTelNum" type="String" mode="IN" optional="true" />
+        <attribute name="userDesc" type="String" mode="IN" optional="true" />
+        <attribute name="userState" type="String" mode="IN" optional="true" />
+        <attribute name="roleIds" type="List" mode="IN" optional="true" string-list-suffix="_role" />
+    </service>
+    <service name="userEdt" engine="java" location="org.ofbiz.erpec.user.service.UserServices" invoke="userEdt">
+        <description>edit user</description>
+        <attribute name="userLoginId" type="String" mode="IN" optional="true" />
+        <attribute name="userName" type="String" mode="IN" optional="true" />
+        <attribute name="userCardId" type="String" mode="IN" optional="true" />
+        <attribute name="userTelNum" type="String" mode="IN" optional="true" />
+        <attribute name="userDesc" type="String" mode="IN" optional="true" />
+        <attribute name="userState" type="String" mode="IN" optional="true" />
+        <attribute name="roleIds" type="List" mode="IN" optional="true" string-list-suffix="_role" />
+    </service>
+
+    <service name="userLstSimpleMethod" engine="simple"
+        location="component://erpec/script/org/ofbiz/erpec/test/TestMethodEvents.xml" invoke="test">
+        <description>Get the main role of this party which is a child of the MAIN_ROLE roletypeId</description>
+        <attribute name="rows" type="List" mode="OUT" optional="true" />
+        <attribute name="results" type="Integer" mode="OUT" optional="true" />
     </service>
 
 </services>

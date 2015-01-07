@@ -1,11 +1,24 @@
 package org.ofbiz.erpec.pojo;
 
+import java.util.List;
+
+/**
+ * 角色值对象
+ * 
+ * 作为前后端角色数据交换载体
+ * 
+ * @author j
+ *
+ */
 public class RoleVO {
+
 	private String roleId;
 	private String roleName;
 	private String roleGrp;
 	private String roleDesc;
 	private String roleStat;
+	private List<String> rolePerms;
+	private List<SecurityPermissionVO> rolePermVOs;
 
 	public String getRoleId() {
 		return roleId;
@@ -47,11 +60,28 @@ public class RoleVO {
 		this.roleStat = roleStat;
 	}
 
+	public List<String> getRolePerms() {
+		return rolePerms;
+	}
+
+	public void setRolePerms(List<String> rolePerms) {
+		this.rolePerms = rolePerms;
+	}
+
+	public List<SecurityPermissionVO> getRolePermVOs() {
+		return rolePermVOs;
+	}
+
+	public void setRolePermVOs(List<SecurityPermissionVO> rolePermVOs) {
+		this.rolePermVOs = rolePermVOs;
+	}
+
 	@Override
 	public String toString() {
 		return "RoleVO [roleId=" + roleId + ", roleName=" + roleName
 				+ ", roleGrp=" + roleGrp + ", roleDesc=" + roleDesc
-				+ ", roleStat=" + roleStat + "]";
+				+ ", roleStat=" + roleStat + ", rolePerms=" + rolePerms
+				+ ", rolePermVOs=" + rolePermVOs + "]";
 	}
 
 }

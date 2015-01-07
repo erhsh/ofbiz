@@ -1,6 +1,6 @@
 import org.ofbiz.entity.GenericDelegator
 import org.ofbiz.entity.condition.EntityCondition
-import org.ofbiz.erpec.pojo.SecurityPermission
+import org.ofbiz.erpec.pojo.SecurityPermissionVO
 
 /**
  * @tile 权限列表
@@ -14,16 +14,16 @@ GenericDelegator delegator = delegator;
 
 EntityCondition cond = null;
 sps = delegator.findList("SecurityPermission", cond, null, null, null, false);
-List<SecurityPermission> securityPermissions = new ArrayList<SecurityPermission>();
+List<SecurityPermissionVO> securityPermissionVOs = new ArrayList<SecurityPermissionVO>();
 for (sp in sps) {
 
 	// Copy entity
-	SecurityPermission securityPermission = new SecurityPermission();
-	securityPermission.setPermissionId(sp.permissionId);
-	securityPermission.setDescription(sp.description);
+	SecurityPermissionVO securityPermissionVO = new SecurityPermissionVO();
+	securityPermissionVO.setPermissionId(sp.permissionId);
+	securityPermissionVO.setDescription(sp.description);
 
 	// add list
-	securityPermissions.add(securityPermission);
+	securityPermissionVOs.add(securityPermissionVO);
 }
 
-context.securityPermissions = securityPermissions;
+context.securityPermissionVOs = securityPermissionVOs;
