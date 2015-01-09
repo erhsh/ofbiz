@@ -14,7 +14,7 @@ List<RoleVO> roleVOs = new ArrayList<RoleVO>();
 for (securityGroup in securityGroups) {
 	RoleVO roleVO = new RoleVO();
 
-	roleVO.setRoleId(securityGroup.securityGroupId);
+	roleVO.setRoleId(securityGroup.groupId);
 	roleVO.setRoleDesc(securityGroup.description);
 
 	roleVOs.add(roleVO);

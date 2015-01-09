@@ -51,7 +51,7 @@
         <attribute name="userTelNum" type="String" mode="IN" optional="true" />
         <attribute name="userDesc" type="String" mode="IN" optional="true" />
         <attribute name="userState" type="String" mode="IN" optional="true" />
-        <attribute name="roleIds" type="List" mode="IN" optional="true" string-list-suffix="_role" />
+        <attribute name="userRoles" type="List" mode="IN" optional="true" string-list-suffix="_role" />
     </service>
     <service name="userEdt" engine="java" location="org.ofbiz.erpec.user.service.UserServices" invoke="userEdt">
         <description>edit user</description>
@@ -61,7 +61,7 @@
         <attribute name="userTelNum" type="String" mode="IN" optional="true" />
         <attribute name="userDesc" type="String" mode="IN" optional="true" />
         <attribute name="userState" type="String" mode="IN" optional="true" />
-        <attribute name="roleIds" type="List" mode="IN" optional="true" string-list-suffix="_role" />
+        <attribute name="userRoles" type="List" mode="IN" optional="true" string-list-suffix="_role" />
     </service>
 
     <service name="userLstSimpleMethod" engine="simple"

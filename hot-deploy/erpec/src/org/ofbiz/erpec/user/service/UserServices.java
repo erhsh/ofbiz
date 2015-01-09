@@ -1,5 +1,6 @@
 package org.ofbiz.erpec.user.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -7,15 +8,18 @@ import java.util.Map;
 
 import javolution.util.FastMap;
 
+import org.ofbiz.base.crypto.HashCrypt;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
+import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.Delegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.condition.EntityCondition;
 import org.ofbiz.entity.condition.EntityOperator;
+import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.erpec.pojo.RoleVO;
 import org.ofbiz.erpec.pojo.UserInfoVO;
 import org.ofbiz.party.contact.ContactMechWorker;
@@ -202,7 +206,7 @@ public class UserServices {
 
 			// == 找出添加的权限
 			List<String> addPermissionIds = new ArrayList<String>();
-			boolean isAdd = true;
+			boolean isAdd;
 			for (Object permissionId : permissionIds) {
 				isAdd = true;
 				for (GenericValue permission : permissions) {
@@ -321,6 +325,20 @@ public class UserServices {
 				// 联系方式
 				userInfoVO.setUserTelNum(getTeleNum(delegator, partyId));
 
+				// 角色
+				List<GenericValue> ulsgs = userLogin.getRelated(
+						"UserLoginSecurityGroup", null, null, false);
+
+				List<RoleVO> userRoleVOs = new ArrayList<RoleVO>();
+
+				ulsgs = EntityUtil.filterByDate(ulsgs);
+				for (GenericValue ulsg : ulsgs) {
+					RoleVO roleVO = new RoleVO();
+					roleVO.setRoleId(ulsg.getString("groupId"));
+					userRoleVOs.add(roleVO);
+				}
+
+				userInfoVO.setUserRoleVOs(userRoleVOs);
 				userInfoVOs.add(userInfoVO);
 			}
 
@@ -362,15 +380,18 @@ public class UserServices {
 		Delegator delegator = dctx.getDelegator();
 
 		try {
+			Timestamp now = UtilDateTime.nowTimestamp();
 			String userLoginId = (String) context.get("userLoginId");
 			String userName = (String) context.get("userName");
 			String userCardId = (String) context.get("userCardId");
 			String userTelNum = (String) context.get("userTelNum");
 			String userDesc = (String) context.get("userDesc");
 			Object userRoles = context.get("userRoles");
+			
+			String userPass = "123456";
 
 			List<?> userRoleIds = null;
-			if (userRoleIds instanceof List<?>) {
+			if (userRoles instanceof List<?>) {
 				userRoleIds = (List<?>) userRoles;
 			}
 
@@ -389,10 +410,12 @@ public class UserServices {
 			person.set("cardId", userCardId);
 			delegator.create(person);
 
+			boolean useEncryption = "true".equals(UtilProperties.getPropertyValue("security.properties", "password.encrypt"));
 			// 创建登录
 			GenericValue userLogin = delegator.makeValue("UserLogin");
 			userLogin.set("userLoginId", userLoginId);
 			userLogin.set("partyId", partyId);
+			userLogin.set("currentPassword", useEncryption ? HashCrypt.cryptUTF8(getHashType(), null, userPass) : userPass);
 			delegator.create(userLogin);
 
 			// 创建联系方式
@@ -413,7 +436,7 @@ public class UserServices {
 					.makeValue("PartyContactMech");
 			partyContactMech.set("partyId", partyId);
 			partyContactMech.set("contactMechId", contactMechId);
-			partyContactMech.set("fromDate", UtilDateTime.nowTimestamp());
+			partyContactMech.set("fromDate", now);
 			delegator.create(partyContactMech);
 
 			// 关联角色
@@ -423,6 +446,7 @@ public class UserServices {
 							.makeValue("UserLoginSecurityGroup");
 					userLoginSecurityGroup.set("userLoginId", userLoginId);
 					userLoginSecurityGroup.set("groupId", userRoleId);
+					userLoginSecurityGroup.set("fromDate", now);
 					delegator.create(userLoginSecurityGroup);
 				}
 			}
@@ -440,5 +464,142 @@ public class UserServices {
 		return result;
 
 	}
+
+	public static Map<String, Object> userEdt(DispatchContext dctx,
+			Map<String, ? extends Object> context) {
+		Map<String, Object> result = FastMap.newInstance();
+		Locale locale = (Locale) context.get("locale");
+		Delegator delegator = dctx.getDelegator();
+
+		try {
+			Timestamp now = UtilDateTime.nowTimestamp();
+			String userLoginId = (String) context.get("userLoginId");
+			String userName = (String) context.get("userName");
+			String userCardId = (String) context.get("userCardId");
+			String userTelNum = (String) context.get("userTelNum");
+			String userDesc = (String) context.get("userDesc");
+			Object userRoles = context.get("userRoles");
+
+			List<?> userRoleIds = null;
+			if (userRoles instanceof List<?>) {
+				userRoleIds = (List<?>) userRoles;
+			}
+
+			// 登录
+			GenericValue userLogin = delegator.findOne("UserLogin",
+					UtilMisc.toMap("userLoginId", userLoginId), false);
+
+			String partyId = userLogin.getString("partyId");
+
+			// 团体
+			GenericValue party = userLogin.getRelatedOne("Party", false);
+			party.set("description", userDesc);
+			party.store();
+
+			// 人员团体
+			GenericValue person = party.getRelatedOne("Person", false);
+			person.set("firstName", userName);
+			person.set("cardId", userCardId);
+			person.store();
+
+			// 团体与联系方式的关联关系
+			List<GenericValue> partyContactMechs = delegator.findByAnd(
+					"PartyContactMech", UtilMisc.toMap("partyId", partyId),
+					null, false);
+
+			partyContactMechs = EntityUtil
+					.filterByDate(partyContactMechs, true);
+			for (GenericValue partyContactMech : partyContactMechs) {
+				GenericValue contactMech = partyContactMech.getRelatedOne(
+						"ContactMech", false);
+				if ("TELECOM_NUMBER".equals(contactMech
+						.getString("contactMechTypeId"))) {
+					GenericValue telecomNumber = contactMech.getRelatedOne(
+							"TelecomNumber", false);
+					telecomNumber.set("contactNumber", userTelNum);
+					telecomNumber.store();
+				}
+			}
+
+			// 关联角色
+			List<GenericValue> userLoginSecurityGroups = delegator.findByAnd(
+					"UserLoginSecurityGroup",
+					UtilMisc.toMap("userLoginId", userLoginId), null, false);
+			userLoginSecurityGroups = EntityUtil.filterByDate(
+					userLoginSecurityGroups, true);
+
+			boolean isAdd;
+			List<Object> addRoles = new ArrayList<Object>();
+			for (Object userRoleId : userRoleIds) {
+				isAdd = true;
+				for (GenericValue userLoginSecurityGroup : userLoginSecurityGroups) {
+					if (userRoleId.equals(userLoginSecurityGroup
+							.getString("groupId"))) {
+						isAdd = false;
+						continue;
+					}
+				}
+				if (isAdd) {
+					addRoles.add(userRoleId);
+				}
+			}
+
+			boolean isDel;
+			List<GenericValue> delRoles = new ArrayList<GenericValue>();
+			for (GenericValue userLoginSecurityGroup : userLoginSecurityGroups) {
+				isDel = true;
+
+				for (Object userRoleId : userRoleIds) {
+					if (userRoleId.equals(userLoginSecurityGroup
+							.getString("groupId"))) {
+						isDel = false;
+						continue;
+					}
+				}
+				if (isDel) {
+					delRoles.add(userLoginSecurityGroup);
+				}
+			}
+
+			for (Object addRole : addRoles) {
+				GenericValue userLoginSecurityGroup = delegator
+						.makeValue("UserLoginSecurityGroup");
+				userLoginSecurityGroup.set("userLoginId", userLoginId);
+				userLoginSecurityGroup.set("groupId", addRole);
+				userLoginSecurityGroup.set("fromDate", now);
+				delegator.create(userLoginSecurityGroup);
+			}
+
+			for (GenericValue delRole : delRoles) {
+				// 更新过期时间，不删
+				delRole.set("thruDate", now);
+				delRole.store();
+			}
+
+		} catch (GenericEntityException e) {
+			Debug.logError(e, module);
+			e.printStackTrace();
+
+			return ServiceUtil.returnError(UtilProperties.getMessage(resource,
+					"PartyCannotCreateRoleTypeEntity",
+					UtilMisc.toMap("errMessage", e.getMessage()), locale));
+		}
+
+		result = ServiceUtil.returnSuccess();
+		return result;
+
+	}
+	
+	
+    public static String getHashType() {
+        String hashType = UtilProperties.getPropertyValue("security.properties", "password.encrypt.hash.type");
+
+        if (UtilValidate.isEmpty(hashType)) {
+            Debug.logWarning("Password encrypt hash type is not specified in security.properties, use SHA", module);
+            hashType = "SHA";
+        }
+
+        return hashType;
+    }
 
 }

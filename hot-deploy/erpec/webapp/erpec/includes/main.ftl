@@ -79,7 +79,7 @@ BUI.use('common/main',function(){
             items:[
               {id:'role-manage',text:'角色管理',href:'/erpec/users/control/viewRoles',closeable:false}
               ,{id:'user-manage',text:'用户管理',href:'/erpec/users/control/viewUsers'}
-              ,{id:'profile',text:'个人信息',href:'/erpec/users/control/profile'}
+              ,{id:'profile',text:'个人信息',href:'/erpec/users/control/viewProfile'}
             ]
         }]
       }];
