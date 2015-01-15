@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<property key="CompanyName">
+		<value xml:lang="en">TongFang</value>
+		<value xml:lang="zh">清华同方</value>
+		<value xml:lang="zh-CN">清华同方</value>
+		<value xml:lang="zh-TW">清华同方</value>
+	</property>
+	<property key="CompanySubtitle">
+		<value xml:lang="en">ERP-EC</value>
+		<value xml:lang="zh">ERP-EC</value>
+		<value xml:lang="zh-CN">ERP-EC</value>
+		<value xml:lang="zh-TW">ERP-EC</value>
+	</property>
+</resource>

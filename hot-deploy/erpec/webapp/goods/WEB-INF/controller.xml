@@ -1,0 +1,56 @@
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/site-conf.xsd">
+
+    <!-- Event Handler -->
+    <handler name="service" type="request" class="org.ofbiz.webapp.event.ServiceEventHandler" />
+    <handler name="groovy" type="request" class="org.ofbiz.webapp.event.GroovyEventHandler" />
+    <handler name="java" type="request" class="org.ofbiz.webapp.event.JavaEventHandler" />
+
+    <!-- View Handler -->
+    <handler name="screen" type="view" class="org.ofbiz.widget.screen.MacroScreenViewHandler" />
+
+    <!-- Request Map -->
+    <request-map uri="json">
+        <security direct-request="false" />
+        <event type="java" path="org.ofbiz.common.CommonEvents" invoke="jsonResponseFromRequestAttributes" />
+        <response name="success" type="none" />
+    </request-map>
+
+    <!-- 商品管理 -->
+    <request-map uri="goodsMgmtView">
+        <response name="success" type="view" value="goodsMgmtView" />
+    </request-map>
+    <request-map uri="ajaxGoodsLst">
+        <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductLst.groovy" />
+        <response name="success" type="request" value="json" />
+    </request-map>
+    <request-map uri="ajaxGoodsAdd">
+        <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductAdd.groovy" />
+        <response name="success" type="request" value="json" />
+    </request-map>
+    <request-map uri="ajaxGoodsEdt">
+        <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductEdt.groovy" />
+        <response name="success" type="request" value="json" />
+    </request-map>
+
+    <!-- 商品审核 -->
+    <request-map uri="goodsCheckView">
+        <response name="success" type="view" value="goodsCheckView" />
+    </request-map>
+    <request-map uri="ajaxGoodsCheckLst">
+        <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductCheckLst.groovy" />
+        <response name="success" type="request" value="json" />
+    </request-map>
+    <request-map uri="ajaxGoodsCheckPass">
+        <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductCheckPass.groovy" />
+        <response name="success" type="request" value="json" />
+    </request-map>
+    <request-map uri="ajaxGoodsCheckReject">
+        <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductCheckReject.groovy" />
+        <response name="success" type="request" value="json" />
+    </request-map>
+
+    <!-- View Map -->
+    <view-map name="goodsMgmtView" type="screen" page="component://erpec/widget/goods/GoodsScreens.xml#GoodsMgmtView" />
+    <view-map name="goodsCheckView" type="screen" page="component://erpec/widget/goods/GoodsScreens.xml#GoodsCheckView" />
+    <view-map name="test" type="screen" page="component://erpec/widget/TestScreens.xml#Test" />
+</site-conf>
