@@ -58,8 +58,8 @@
         <member-entity entity-alias="REL" entity-name="SecurityGroupRelationship" />
         <member-entity entity-alias="GRP" entity-name="SecurityGroup" />
         <member-entity entity-alias="STA" entity-name="StatusItem" />
-        <alias entity-alias="TYP" name="securityGroupTypeId"/>
-        <alias entity-alias="TYP" name="typeDesc" field="description"/>
+        <alias entity-alias="TYP" name="securityGroupTypeId" />
+        <alias entity-alias="TYP" name="typeDesc" field="description" />
         <alias entity-alias="GRP" name="groupId" />
         <alias entity-alias="GRP" name="groupName" />
         <alias entity-alias="GRP" name="grpDesc" field="description" />
@@ -70,8 +70,73 @@
         <view-link entity-alias="REL" rel-entity-alias="GRP">
             <key-map field-name="groupId" rel-field-name="groupId" />
         </view-link>
-        <view-link entity-alias="GRP" rel-entity-alias="STA" rel-optional="true" >
+        <view-link entity-alias="GRP" rel-entity-alias="STA" rel-optional="true">
             <key-map field-name="statusId" rel-field-name="description" />
         </view-link>
     </view-entity>
+
+    <!-- ========================================================= -->
+    <!-- org.ofbiz.erpec.goods -->
+    <!-- ========================================================= -->
+    <entity entity-name="ProductState" package-name="org.ofbiz.erpec.goods" title="ProductState Entity">
+        <field name="productId" type="id-ne"></field>
+        <field name="state" type="name"></field>
+        <field name="stateEnable" type="name"></field>
+        <field name="stateInfo" type="name"></field>
+        <field name="statePrice" type="name"></field>
+        <prim-key field="productId" />
+        <relation type="one" rel-entity-name="Product">
+            <key-map field-name="productId" />
+        </relation>
+    </entity>
+    <entity entity-name="TmpProductEnable" package-name="org.ofbiz.erpec.goods" title="TmpProductEnable Entity">
+        <field name="productId" type="id-ne"></field>
+        <field name="partyId" type="id-ne"></field>
+        <field name="tmpEnable" type="name"></field>
+        <field name="checkState" type="name"></field>
+        <field name="checkMsg" type="name"></field>
+        <prim-key field="productId" />
+        <relation type="one" rel-entity-name="Product">
+            <key-map field-name="productId" />
+        </relation>
+        <relation type="one" rel-entity-name="Party">
+            <key-map field-name="partyId" />
+        </relation>
+    </entity>
+    <entity entity-name="TmpProductInfo" package-name="org.ofbiz.erpec.goods" title="TmpProductInfo Entity">
+        <field name="productId" type="id-ne"></field>
+        <field name="partyId" type="id-ne"></field>
+        <field name="tmpProductNo" type="name"></field>
+        <field name="tmpProductName" type="name"></field>
+        <field name="tmpInternalName" type="name"></field>
+        <field name="tmpProductCategoryId" type="id-ne"></field>
+        <field name="checkState" type="name"></field>
+        <field name="checkMsg" type="name"></field>
+        <prim-key field="productId" />
+        <relation type="one" rel-entity-name="Product">
+            <key-map field-name="productId" />
+        </relation>
+        <relation type="one" rel-entity-name="Party">
+            <key-map field-name="partyId" />
+        </relation>
+        <relation type="one" rel-entity-name="ProductCategory">
+            <key-map field-name="tmpProductCategoryId" rel-field-name="productCategoryId" />
+        </relation>
+    </entity>
+    <entity entity-name="TmpProductPrice" package-name="org.ofbiz.erpec.goods" title="TmpProductPrice Entity">
+        <field name="productId" type="id-ne"></field>
+        <field name="partyId" type="id-ne"></field>
+        <field name="tmpPrice" type="name"></field>
+        <field name="fromDate" type="date-time"></field>
+        <field name="thruDate" type="date-time"></field>
+        <field name="checkState" type="name"></field>
+        <field name="checkMsg" type="name"></field>
+        <prim-key field="productId" />
+        <relation type="one" rel-entity-name="Product">
+            <key-map field-name="productId" />
+        </relation>
+        <relation type="one" rel-entity-name="Party">
+            <key-map field-name="partyId" />
+        </relation>
+    </entity>
 </entitymodel>

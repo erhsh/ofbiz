@@ -40,7 +40,7 @@ try {
 	product.set("productName", prodName);
 	product.set("internalName", prodModel);
 	product.store();
-
+	
 	// 商品价格
 	boolean isChanged = false;
 	List<GenericValue> productPrices = product.getRelated("ProductPrice", null, null, false);

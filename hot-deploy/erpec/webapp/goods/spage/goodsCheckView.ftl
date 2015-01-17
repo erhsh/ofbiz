@@ -92,17 +92,16 @@
           {title:'商品分类',dataIndex:'prodCategory',width:100},
           {title:'状态',dataIndex:'prodState',width:50},
           {title:'操作',dataIndex:'',width:200,renderer : function(value,obj){
-            var passStr = '<span class="grid-command btn-open" title="审核通过">审核通过</span>',
-              rejectStr = '<span class="grid-command btn-close" title="打回申请">打回申请</span>';
+            var passStr = '<span class="grid-command btn-pass" title="审核通过">审核通过</span>',
+              rejectStr = '<span class="grid-command btn-reject" title="打回申请">打回申请</span>';
             return passStr + rejectStr;
           }}
         ],
       store = Search.createStore('/erpec/goods/control/ajaxGoodsCheckLst',{
         proxy : {
-          save : { //也可以是一个字符串，那么增删改，都会往那么路径提交数据，同时附加参数saveType
-            addUrl : '/erpec/goods/control/ajaxGoodsAdd',
-            updateUrl : '/erpec/goods/control/ajaxGoodsEdt',
-            removeUrl : '../data/del.php'
+          save : {
+            passUrl : '/erpec/goods/control/ajaxGoodsCheckPass',
+            rejectUrl : '/erpec/goods/control/ajaxGoodsCheckReject'
           },
           method : 'POST'
         },
@@ -110,9 +109,7 @@
       }),
       gridCfg = Search.createGridCfg(columns,{
         tbar : {
-          items : [
-            {text : '<i class="icon-plus"></i>新建',btnCls : 'button button-small',handler:addFunction}
-          ]
+          items : []
         },
         plugins : [editing,BUI.Grid.Plugins.CheckSelection,BUI.Grid.Plugins.AutoFit] // 插件形式引入多选表格
       });
@@ -123,36 +120,49 @@
       }),
       grid = search.get('grid');
 
-    function addFunction(){
-      var newData = {isNew : true}; //标志是新增加的记录
-      editing.add(newData,'name'); //添加记录后，直接编辑
-    }
-
-    //删除操作
-    function delFunction(){
-      var selections = grid.getSelection();
-      delItems(selections);
-    }
-
-    function delItems(items){
-      var ids = [];
+	// 通过    
+    function passItems(items){
+      var prodIds = [];
       BUI.each(items,function(item){
-        ids.push(item.id);
+        prodIds.push(item.prodId);
       });
 
-      if(ids.length){
-        BUI.Message.Confirm('确认要删除选中的记录么？',function(){
-          store.save('remove',{ids : ids});
+      if(prodIds.length){
+        BUI.Message.Confirm('确认要通过选中的记录么？',function(){
+          store.save('pass',{prodIds : prodIds});
+        },'question');
+      }
+    }
+    
+    // 打回
+    function rejectItems(items){
+      var prodIds = [];
+      BUI.each(items,function(item){
+        prodIds.push(item.prodId);
+      });
+
+      if(prodIds.length){
+        BUI.Message.Confirm('确认要打回选中的记录么？',function(){
+          store.save('reject',{prodIds : prodIds});
         },'question');
       }
     }
 
-    //监听事件，删除一条记录
+    //审核通过
     grid.on('cellclick',function(ev){
       var sender = $(ev.domTarget); //点击的Dom
-      if(sender.hasClass('btn-del')){
+      if(sender.hasClass('btn-pass')){
         var record = ev.record;
-        delItems([record]);
+        passItems([record]);
+      }
+    });
+
+    //审核打回
+    grid.on('cellclick',function(ev){
+      var sender = $(ev.domTarget); //点击的Dom
+      if(sender.hasClass('btn-reject')){
+        var record = ev.record;
+        rejectItems([record]);
       }
     });
   });

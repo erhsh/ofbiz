@@ -78,7 +78,7 @@
 <script type="text/javascript">
   BUI.use('common/search',function (Search) {
     
-    var enumObj = {"1":"男","0":"女"},
+  var enumObj = {"1":"男","0":"女"},
       editing = new BUI.Grid.Plugins.DialogEditing({
         contentId : 'content', //设置隐藏的Dialog内容
         autoSave : true, //添加数据或者修改数据时，自动保存
@@ -92,14 +92,19 @@
           {title:'商品分类',dataIndex:'prodCategory',width:100},
           {title:'状态',dataIndex:'prodState',width:50},
           {title:'操作',dataIndex:'',width:100,renderer : function(value,obj){
-            var runStr = '<span class="grid-command btn-open" title="商品上架">上架</span>',
-              stopStr = '<span class="grid-command btn-close" title="商品下架">下架</span>';
-            return runStr + stopStr;
+            var enableStr = '<span class="grid-command btn-enable" title="商品上架">上架</span>',
+              disableStr = '<span class="grid-command btn-disable" title="商品下架">下架</span>';
+            return enableStr + disableStr;
           }},
           {title:'编辑',dataIndex:'',width:100,renderer : function(value,obj){
             var editParam = '<span class="grid-command btn-edit" title="编辑商品参数">编辑参数</span>',
             editPrice = '<span class="grid-command btn-edit" title="调整商品价格">调价</span>';
             return editParam + editPrice;
+          }},
+          {title:'Other',dataIndex:'',width:100,renderer : function(value,obj){
+            var submitParam = '<span class="grid-command btn-submit" title="提交数据">提交</span>',
+            delParam = '<span class="grid-command btn-del" title="删除商品">删除</span>';
+            return submitParam + delParam;
           }}
         ],
       store = Search.createStore('/erpec/goods/control/ajaxGoodsLst',{
@@ -107,7 +112,10 @@
           save : { //也可以是一个字符串，那么增删改，都会往那么路径提交数据，同时附加参数saveType
             addUrl : '/erpec/goods/control/ajaxGoodsAdd',
             updateUrl : '/erpec/goods/control/ajaxGoodsEdt',
-            removeUrl : '../data/del.php'
+            removeUrl : '/erpec/goods/control/ajaxGoodsDel',
+            submitUrl : '/erpec/goods/control/ajaxGoodsSubmit',
+            enableUrl : '/erpec/goods/control/ajaxGoodsEnable',
+            disableUrl : '/erpec/goods/control/ajaxGoodsDisable',
           },
           method : 'POST'
         },
@@ -119,14 +127,14 @@
             {text : '<i class="icon-plus"></i>新建',btnCls : 'button button-small',handler:addFunction}
           ]
         },
-        plugins : [editing,BUI.Grid.Plugins.CheckSelection,BUI.Grid.Plugins.AutoFit] // 插件形式引入多选表格
+        plugins : [editing, BUI.Grid.Plugins.CheckSelection, BUI.Grid.Plugins.AutoFit] // 插件形式引入多选表格
       });
 
     var search = new Search({
-        store : store,
-        gridCfg : gridCfg
-      }),
-      grid = search.get('grid');
+        				store : store,
+        				gridCfg : gridCfg
+      			}),
+      	grid = search.get('grid');
 
     function addFunction(){
       var newData = {isNew : true}; //标志是新增加的记录
@@ -134,20 +142,57 @@
     }
 
     //删除操作
-    function delFunction(){
-      var selections = grid.getSelection();
-      delItems(selections);
-    }
-
     function delItems(items){
-      var ids = [];
+      var prodIds = [];
       BUI.each(items,function(item){
-        ids.push(item.id);
+        prodIds.push(item.prodId);
       });
 
-      if(ids.length){
+      if(prodIds.length){
         BUI.Message.Confirm('确认要删除选中的记录么？',function(){
-          store.save('remove',{ids : ids});
+          store.save('remove',{prodIds : prodIds});
+        },'question');
+      }
+    }
+    
+    //提交操作
+    function submitItems(items){
+      var prodIds = [];
+      BUI.each(items,function(item){
+        prodIds.push(item.prodId);
+      });
+
+      if(prodIds.length){
+        BUI.Message.Confirm('确认要提交选中的记录么？',function(){
+          store.save('submit',{prodIds : prodIds});
+        },'question');
+      }
+    }
+    
+    //上架操作
+    function enableItems(items){
+      var prodIds = [];
+      BUI.each(items,function(item){
+        prodIds.push(item.prodId);
+      });
+
+      if(prodIds.length){
+        BUI.Message.Confirm('确认要提交选中的记录么？',function(){
+          store.save('enable',{prodIds : prodIds});
+        },'question');
+      }
+    }
+    
+    //下架操作
+    function disableItems(items){
+      var prodIds = [];
+      BUI.each(items,function(item){
+        prodIds.push(item.prodId);
+      });
+
+      if(prodIds.length){
+        BUI.Message.Confirm('确认要提交选中的记录么？',function(){
+          store.save('disable',{prodIds : prodIds});
         },'question');
       }
     }
@@ -158,7 +203,17 @@
       if(sender.hasClass('btn-del')){
         var record = ev.record;
         delItems([record]);
+      }else if(sender.hasClass('btn-submit')){
+        var record = ev.record;
+        submitItems([record]);
+      }else if(sender.hasClass('btn-enable')){
+      	var record = ev.record;
+        enableItems([record]);
+      }else if(sender.hasClass('btn-disable')){
+      	var record = ev.record;
+        disableItems([record]);
       }
+      
     });
   });
 </script>

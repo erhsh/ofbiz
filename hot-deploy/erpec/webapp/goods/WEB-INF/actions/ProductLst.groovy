@@ -1,5 +1,5 @@
 import org.ofbiz.base.util.Debug
-import org.ofbiz.base.util.UtilDateTime;
+import org.ofbiz.base.util.UtilDateTime
 import org.ofbiz.base.util.UtilValidate
 import org.ofbiz.entity.GenericDelegator
 import org.ofbiz.entity.GenericEntityException
@@ -10,10 +10,10 @@ import org.ofbiz.entity.model.DynamicViewEntity
 import org.ofbiz.entity.model.ModelKeyMap
 import org.ofbiz.entity.transaction.TransactionUtil
 import org.ofbiz.entity.util.EntityListIterator
-import org.ofbiz.entity.util.EntityUtil
 import org.ofbiz.erpec.pojo.goods.ProductVO
 
 
+String module = "ProductEnable.groovy";
 
 GenericDelegator delegator = delegator;
 
@@ -33,6 +33,10 @@ dve.addViewLink("PCM", "PRD", Boolean.TRUE, ModelKeyMap.makeKeyMapList("productI
 dve.addMemberEntity("PP", "ProductPrice");
 dve.addAlias("PP", "price");
 dve.addViewLink("PRD", "PP", Boolean.TRUE, ModelKeyMap.makeKeyMapList("productId"))
+
+dve.addMemberEntity("PS", "ProductState");
+dve.addAlias("PS", "state");
+dve.addViewLink("PRD", "PS", Boolean.TRUE, ModelKeyMap.makeKeyMapList("productId"))
 
 // 所有照明产品的父分类
 String productCategoryId = parameters.prodCategoryId;
@@ -65,24 +69,23 @@ try {
 		prodVO.setProdModel(product.getString("internalName"));
 		prodVO.setProdCategory(product.getString("productCategoryId"));
 		prodVO.setProdPrice(product.getString("price"));
-
+		prodVO.setProdState(product.getString("state"));
 		prodVOs.add(prodVO);
 	}
 
 	eli.close();
 }catch(GenericEntityException e){
 	errMsg = "Failure in operation, rolling back transaction";
-	Debug.logError(e, errMsg, "ProductLst");
+	Debug.logError(e, errMsg, module);
 	try {
 		TransactionUtil.rollback(beganTransaction, errMsg, e);
 	} catch (GenericEntityException e2) {
-		Debug.logError(e2, "Could not rollback transaction: " + e2.toString(), "ProductLst");
+		Debug.logError(e2, "Could not rollback transaction: " + e2.toString(), module);
 	}
 	throw e;
 } finally {
 	TransactionUtil.commit(beganTransaction);
 }
 
-println prodVOs;
 request.setAttribute("rows", prodVOs);
 request.setAttribute("results", prodVOs.size());
