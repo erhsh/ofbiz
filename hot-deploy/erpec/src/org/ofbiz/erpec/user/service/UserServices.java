@@ -10,8 +10,6 @@ import javolution.util.FastMap;
 
 import org.ofbiz.base.crypto.HashCrypt;
 import org.ofbiz.base.util.Debug;
-import org.ofbiz.base.util.GeneralException;
-import org.ofbiz.base.util.GroovyUtil;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
@@ -337,15 +335,17 @@ public class UserServices {
 						"UserLoginSecurityGroup", null, null, false);
 
 				List<RoleVO> userRoleVOs = new ArrayList<RoleVO>();
-
+				List<String> userRoles = new ArrayList<String>();
 				ulsgs = EntityUtil.filterByDate(ulsgs);
 				for (GenericValue ulsg : ulsgs) {
 					RoleVO roleVO = new RoleVO();
 					roleVO.setRoleId(ulsg.getString("groupId"));
 					userRoleVOs.add(roleVO);
+					userRoles.add(ulsg.getString("groupId"));
 				}
 
 				userInfoVO.setUserRoleVOs(userRoleVOs);
+				userInfoVO.setUserRoles(userRoles);
 				userInfoVOs.add(userInfoVO);
 			}
 
@@ -709,17 +709,19 @@ public class UserServices {
 	public static Map<String, Object> testService(DispatchContext dctx,
 			Map<String, ? extends Object> context) {
 		Map<String, Object> result = FastMap.newInstance();
-		try {
-			Object obj = GroovyUtil
-					.runScriptAtLocation(
-							"component://ecommerce/webapp/ecommerce/WEB-INF/actions/catalog/BestSellingCategory.groovy",
-							null, null);
-			System.out.println(obj);
-
-		} catch (GeneralException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			Object obj = GroovyUtil
+//					.runScriptAtLocation(
+//							"component://ecommerce/webapp/ecommerce/WEB-INF/actions/catalog/BestSellingCategory.groovy",
+//							null, null);
+//			System.out.println(obj);
+//
+//		} catch (GeneralException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		Debug.logError("---------------UserServices.testService()", module);
 		return result;
 
 	}

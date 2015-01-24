@@ -70,19 +70,26 @@
         <attribute name="rows" type="List" mode="OUT" optional="true" />
         <attribute name="results" type="Integer" mode="OUT" optional="true" />
     </service>
-    
+
     <!-- Begin 个人信息 -->
     <service name="profileEdt" engine="java" location="org.ofbiz.erpec.user.service.UserServices" invoke="profileEdt">
-    	<description>Edit the profile information</description>
-    	<attribute name="loginId" mode="IN" type="String" optional="false" />
-    	<attribute name="nickname" mode="IN" type="String" optional="false" />
-    	<attribute name="telNum" mode="IN" type="String" optional="true" />
-    	<attribute name="telNum2" mode="IN" type="String" optional="true" />
-    	<attribute name="cardId" mode="IN" type="String" optional="true" />
-    	<attribute name="addr" mode="IN" type="String" optional="true" />
+        <description>Edit the profile information</description>
+        <attribute name="loginId" mode="IN" type="String" optional="false" />
+        <attribute name="nickname" mode="IN" type="String" optional="false" />
+        <attribute name="telNum" mode="IN" type="String" optional="true" />
+        <attribute name="telNum2" mode="IN" type="String" optional="true" />
+        <attribute name="cardId" mode="IN" type="String" optional="true" />
+        <attribute name="addr" mode="IN" type="String" optional="true" />
     </service>
     <!-- End 个人信息 -->
-    
+
+    <!-- 商品相关服务 -->
+    <service name="makePriceChangeValidate" engine="java" location="org.ofbiz.erpec.goods.service.GoodsServices"
+        invoke="makePriceChangeValidate">
+        <description>Make the changed price validate.</description>
+    </service>
+    <!-- End 商品相关服务 -->
+
     <service name="testService" engine="java" location="org.ofbiz.erpec.user.service.UserServices" invoke="testService">
     </service>
 

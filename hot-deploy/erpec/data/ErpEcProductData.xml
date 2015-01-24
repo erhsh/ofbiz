@@ -1,0 +1,27 @@
+<entity-engine-xml>
+    <!-- 产品目录 -->
+    <ProdCatalog prodCatalogId="LightingCatalog" catalogName="Lighting Catalog"/>
+    
+    <!-- 目录所属商店 -->    
+    <ProductStoreCatalog productStoreId="9000" prodCatalogId="LightingCatalog" fromDate="2015-01-01 12:00:00.0" sequenceNum="5"/>
+    
+    <!-- 产品分类 -->
+    <ProductCategory categoryName="LED照明" productCategoryId="LED_LIGHTING" productCategoryTypeId="CATALOG_CATEGORY"/>
+    <ProductCategory categoryName="LED灯泡" productCategoryId="LED_DENGPAO" productCategoryTypeId="CATALOG_CATEGORY"/>
+    <ProductCategory categoryName="LED灯牌" productCategoryId="LED_DENGPAI" productCategoryTypeId="CATALOG_CATEGORY"/>
+    <ProductCategory categoryName="LED射灯" productCategoryId="LED_SHEDENG" productCategoryTypeId="CATALOG_CATEGORY"/>
+    <ProductCategory categoryName="LED筒灯" productCategoryId="LED_TONGDENG" productCategoryTypeId="CATALOG_CATEGORY"/>
+    <ProductCategory categoryName="LED吸顶灯" productCategoryId="LED_XIDINGDENG" productCategoryTypeId="CATALOG_CATEGORY"/>
+    
+    <!-- 分类层级关系 -->
+    <ProductCategoryRollup fromDate="2015-01-01 12:00:00.0" parentProductCategoryId="LED_LIGHTING" productCategoryId="LED_DENGPAO"/>
+    <ProductCategoryRollup fromDate="2015-01-01 12:00:00.0" parentProductCategoryId="LED_LIGHTING" productCategoryId="LED_DENGPAI"/>
+    <ProductCategoryRollup fromDate="2015-01-01 12:00:00.0" parentProductCategoryId="LED_LIGHTING" productCategoryId="LED_SHEDENG"/>
+    <ProductCategoryRollup fromDate="2015-01-01 12:00:00.0" parentProductCategoryId="LED_LIGHTING" productCategoryId="LED_TONGDENG"/>
+    <ProductCategoryRollup fromDate="2015-01-01 12:00:00.0" parentProductCategoryId="LED_LIGHTING" productCategoryId="LED_XIDINGDENG"/>
+    
+    <!-- 目录分类关系 -->
+    <ProdCatalogCategory prodCatalogId="LightingCatalog" productCategoryId="LED_LIGHTING" fromDate="2015-01-01 12:00:00.0"
+        sequenceNum="1" prodCatalogCategoryTypeId="PCCT_BROWSE_ROOT"/>
+    
+</entity-engine-xml>

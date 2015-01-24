@@ -29,35 +29,97 @@ try {
 
 	// 解析参数
 	String[] prodIds = request.getParameterValues("prodIds[]");
-	Debug.logInfo(">>>Products:"+ prodIds, module);
-	for (prodId in prodIds) {
+	String[] prodStates = request.getParameterValues("prodStates[]");
+	Debug.logInfo(">>>Product ids:" + prodIds, module);
+	Debug.logInfo(">>>Product states:" + prodStates, module);
+
+	int count = (prodIds.length == prodStates.length) ? prodIds.length : 0;
+
+	for (int i=0; i<count; i++) {
+		String prodId = prodIds[i];
+		String prodState = prodStates[i];
+
 		// 商品
 		GenericValue product = delegator.findOne("Product", UtilMisc.toMap("productId", prodId), false);
 
 		if (null == product) {
 			throw new Exception("Unknow prodId:" + prodId);
 		}
-		
-		GenericValue productState = product.getRelatedOne("ProductState", false);
-		if (null == productState) {
-			throw new Exception("ProductState is null, prodId:" + prodId);
+
+		GenericValue productExt = product.getRelatedOne("ProductExt", false);
+		if (null == productExt) {
+			throw new Exception("ProductExt is null, prodId:" + prodId);
 		}
 
-		String oldState = productState.getString("state");
 
-		// 新建待审核
-		if (PROD_STAT_CHECKING.equals(oldState)) {
+		if ("CHECKING".equals(prodState)) {
+			// 新建待审核
+			String oldState = productExt.getString("state");
+			if (prodState.equals(oldState)) {
+				// 状态恢复
+				productExt.set("state", PROD_STAT_NEW);
+				productExt.store();
+			}
+		} else if ("ENABLING".equals(prodState) || "DISABLING".equals(prodState)) {
+			// 上下架审核
+			String stateEnable = productExt.getString("stateEnable");
+			if (prodState.equals(stateEnable)) {
+				// 状态恢复
+				productExt.set("stateEnable", "_NA_")
+				productExt.store();
 
-			productState.set("state", PROD_STAT_NEW);
-			productState.store();
-		}
+				GenericValue tmpProductEnable = product.getRelatedOne("TmpProductEnable", false);
+				if (null != tmpProductEnable){
+					// 保存审核结果
+					tmpProductEnable.setString("checkState", "REJECT");
+					tmpProductEnable.setString("checkMsg", "拒绝还需要理由吗?");
+					tmpProductEnable.store();
 
-		// 架上 or 架下
-		if (PROD_STAT_ENABLED.equals(oldState) || PROD_STAT_DISABLED.equals(oldState)) {
-			GenericValue tmpProductEnable = product.getRelatedOne("TmpProductEnable", false);
-			tmpProductEnable.setString("checkState", "REJECT");
-			tmpProductEnable.setString("checkMsg", "拒绝还需要理由吗?");
-			tmpProductEnable.store();
+					Debug.logInfo(">>>Check ENABLING or DISABLING over.", module);
+				} else {
+					Debug.logWarning("TmpProductEnable lost data.", module);
+				}
+			}
+
+		} else if ("EDITING".equals(prodState)) {
+			Debug.logInfo(">>>Deal EDITING...", module);
+			// 编辑审核
+			String stateEdit = productExt.getString("stateEdit");
+			if (prodState.equals(stateEdit)) {// 编辑请求
+				// 状态恢复
+				productExt.set("stateEdit", "_NA_")
+				productExt.store();
+
+				// 保存审核结果
+				GenericValue tmpProductEdit = product.getRelatedOne("TmpProductEdit", false);
+				tmpProductEdit.setString("checkState", "REJECT");
+				tmpProductEdit.setString("checkMsg", "拒绝还需要理由吗?");
+				tmpProductEdit.store();
+
+				Debug.logInfo(">>>Deal EDITING over.", module);
+			} else {
+				Debug.logWarning("Old state is not EDITING, discard this operation.", module);
+			}
+		} else if ("PRICING".equals(prodState)) {
+			Debug.logInfo(">>>Deal Pricing...", module);
+			String statePrice = productExt.getString("statePrice");
+			if (prodState.equals(statePrice)) {
+				// 更新产品状态
+				productExt.set("statePrice", "_NA_");
+				productExt.store();
+
+				// 保存审核结果
+				GenericValue tmpProductPrice = product.getRelatedOne("TmpProductPrice", false);
+				tmpProductPrice.setString("checkState", "REJECT");
+				tmpProductPrice.setString("checkMsg", "拒绝还需要理由吗?");
+				tmpProductPrice.store();
+
+				Debug.logInfo(">>>Deal Pricing over.", module);
+			} else {
+				Debug.logWarning("Old price state is not pricing, discard this operation.", module);
+			}
+		} else {
+			Debug.logWarning("Unkown request state: " + prodState, module);
 		}
 
 	}

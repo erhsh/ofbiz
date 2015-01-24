@@ -32,21 +32,19 @@ try {
 	Debug.logInfo(">>>products:"+ prodIds, module);
 	for (prodId in prodIds) {
 		// 商品
-		GenericValue productState = delegator.findOne("ProductState", UtilMisc.toMap("productId", prodId), false);
-
-		if (null == productState) {
-			Debug.logWarning(">>>Cannot find product state for prodId:"+ prodId, module);
-			continue;
+		GenericValue productExt = delegator.findOne("ProductExt", UtilMisc.toMap("productId", prodId), false);
+		if (null == productExt) {
+			throw new Exception("Cannot find product state for prodId:"+ prodId);
 		}
 
-		String oldState = productState.getString("state");
+		String oldState = productExt.getString("state");
 		if (!PROD_STAT_NEW.equals(oldState)) {
-			Debug.logWarning(">>>Unexpected product state:" + oldState + ", prodId:"+ prodId, module);
-			continue;
+			throw new Exception("Unexpected product state:" + oldState + ", prodId:" + prodId);
 		}
 
-		productState.set("state", PROD_STAT_CHECKING);
-		productState.store();
+		// 新建带提交
+		productExt.set("state", PROD_STAT_CHECKING);
+		productExt.store();
 	}
 
 	Debug.logInfo("End>>>", module);

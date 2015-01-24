@@ -24,8 +24,16 @@
     </div>
 </div>
 
-<div id="content" class="hide">
+<div id="contentNew" class="hide">
       <form id="J_Form" class="form-horizontal" action="../data/edit.php?a=1">
+        <div class="row">
+          <div class="control-group span8">
+            <label class="control-label"><s>*</s>商品编码：</label>
+            <div class="controls">
+              <input name="prodCode" type="text" data-rules="{required:true}" class="input-normal control-text">
+            </div>
+          </div>
+        </div>
         <div class="row">
           <div class="control-group span8">
             <label class="control-label"><s>*</s>品名规格：</label>
@@ -50,12 +58,89 @@
           <div class="control-group span8">
             <label class="control-label"><s>*</s>商品分类：</label>
             <div class="controls">
-              <select data-rules="{required:true}" name="prodCategoryId" class="input-normal"> 
+              <select data-rules="{required:true}" name="prodCategory" class="input-normal"> 
                 <option value="">请选择</option>
                 <#list productCategoryVOs as productCategoryVO>
 					<option value="${productCategoryVO.productCategoryId}">${productCategoryVO.categoryName}</option>
 				</#list>
               </select>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+
+<div id="contentEdit" class="hide">
+      <form id="J_Form" class="form-horizontal" action="../data/edit.php?a=1">
+        <div class="row">
+          <div class="control-group span8">
+            <label class="control-label"><s>*</s>商品编码：</label>
+            <div class="controls">
+              <input name="prodCode" type="text" class="input-normal control-text" readonly="true">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span8">
+            <label class="control-label"><s>*</s>品名规格：</label>
+            <div class="controls">
+              <input name="prodName" type="text" data-rules="{required:true}" class="input-normal control-text">
+            </div>
+          </div>
+          <div class="control-group span8">
+            <label class="control-label"><s>*</s>商品型号：</label>
+            <div class="controls">
+              <input name="prodModel" type="text" data-rules="{required:true}" class="input-normal control-text">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span8">
+            <label class="control-label"><s>*</s>分销价格：</label>
+            <div class="controls">
+              <input name="prodPrice" type="text" class="input-normal control-text" readonly="true">
+            </div>
+          </div>
+          <div class="control-group span8">
+            <label class="control-label"><s>*</s>商品分类：</label>
+            <div class="controls">
+              <select data-rules="{required:true}" name="prodCategory" class="input-normal"> 
+                <option value="">请选择</option>
+                <#list productCategoryVOs as productCategoryVO>
+					<option value="${productCategoryVO.productCategoryId}">${productCategoryVO.categoryName}</option>
+				</#list>
+              </select>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+
+<div id="contentPrice" class="hide">
+      <form id="J_Form" class="form-horizontal" action="../data/edit.php?a=1">
+        <div class="row">
+          <div class="control-group span8">
+            <label class="control-label"><s>*</s>商品价格：</label>
+            <div class="controls">
+              <input name="prodPrice" type="text" data-rules="{required:true}" class="input-normal control-text">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span8">
+            <label class="control-label"><s>*</s>生效日期：</label>
+            <div class="controls">
+              <input type="text" class="calendar" data-rules="{required:true}" name="prodPriceFromDate">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span8">
+            <label class="control-label"><s>*</s>勾选一下：</label>
+            <div class="controls">
+              <input type="radio" name="isPrice" data-rules="{required:true}" />
             </div>
           </div>
         </div>
@@ -77,20 +162,40 @@
   </script> 
 <script type="text/javascript">
   BUI.use('common/search',function (Search) {
-    
-  var enumObj = {"1":"男","0":"女"},
-      editing = new BUI.Grid.Plugins.DialogEditing({
-        contentId : 'content', //设置隐藏的Dialog内容
+  var enumObj = {
+				<#list productCategoryVOs as productCategoryVO>
+					"${productCategoryVO.productCategoryId}":"${productCategoryVO.categoryName}",
+				</#list>
+  	  },
+  	  enumState = {
+				"NEW":"新建未提交",
+				"CHECKING":"新建审核中",
+				"ENABLED":"架上",
+				"DISABLED":"架下",
+  	  },
+  	  editingNew = new BUI.Grid.Plugins.DialogEditing({
+        contentId : 'contentNew', //设置隐藏的Dialog内容
+        autoSave : true, //添加数据或者修改数据时，自动保存
+      }),
+      editingEdit = new BUI.Grid.Plugins.DialogEditing({
+        contentId : 'contentEdit', //设置隐藏的Dialog内容
         autoSave : true, //添加数据或者修改数据时，自动保存
         triggerCls : 'btn-edit'
       }),
+      editingPrice = new BUI.Grid.Plugins.DialogEditing({
+        contentId : 'contentPrice', //设置隐藏的Dialog内容
+        autoSave : true, //添加数据或者修改数据时，自动保存
+        triggerCls : 'btn-edit-price'
+      }),
+
       columns = [
-          {title:'商品编号',dataIndex:'prodId',width:150},
-          {title:'品名规格',dataIndex:'prodName',width:200},
-          {title:'商品型号',dataIndex:'prodModel',width:200},
+          {title:'商品ID',dataIndex:'prodId',width:80},
+          {title:'商品编码',dataIndex:'prodCode',width:150},
+          {title:'品名规格',dataIndex:'prodName',width:150},
+          {title:'商品型号',dataIndex:'prodModel',width:150},
           {title:'分销售价',dataIndex:'prodPrice',width:100},
-          {title:'商品分类',dataIndex:'prodCategory',width:100},
-          {title:'状态',dataIndex:'prodState',width:50},
+          {title:'商品分类',dataIndex:'prodCategory',width:100,renderer:BUI.Grid.Format.enumRenderer(enumObj)},
+          {title:'状态',dataIndex:'prodState',width:100,renderer:BUI.Grid.Format.enumRenderer(enumState)},
           {title:'操作',dataIndex:'',width:100,renderer : function(value,obj){
             var enableStr = '<span class="grid-command btn-enable" title="商品上架">上架</span>',
               disableStr = '<span class="grid-command btn-disable" title="商品下架">下架</span>';
@@ -98,13 +203,14 @@
           }},
           {title:'编辑',dataIndex:'',width:100,renderer : function(value,obj){
             var editParam = '<span class="grid-command btn-edit" title="编辑商品参数">编辑参数</span>',
-            editPrice = '<span class="grid-command btn-edit" title="调整商品价格">调价</span>';
+            editPrice = '<span class="grid-command btn-edit-price" title="调整商品价格">调价</span>';
             return editParam + editPrice;
           }},
-          {title:'Other',dataIndex:'',width:100,renderer : function(value,obj){
-            var submitParam = '<span class="grid-command btn-submit" title="提交数据">提交</span>',
+          {title:'Other',dataIndex:'',width:200,renderer : function(value,obj){
+            var submitParam = '<span class="grid-command btn-submit" title="提交新建数据">提交新建</span>',
+            submitEditParam = '<span class="grid-command btn-submit-edit" title="提交编辑数据">提交编辑</span>',
             delParam = '<span class="grid-command btn-del" title="删除商品">删除</span>';
-            return submitParam + delParam;
+            return submitParam + submitEditParam + delParam;
           }}
         ],
       store = Search.createStore('/erpec/goods/control/ajaxGoodsLst',{
@@ -114,6 +220,7 @@
             updateUrl : '/erpec/goods/control/ajaxGoodsEdt',
             removeUrl : '/erpec/goods/control/ajaxGoodsDel',
             submitUrl : '/erpec/goods/control/ajaxGoodsSubmit',
+            submitEditUrl : '/erpec/goods/control/ajaxGoodsSubmitEdit',
             enableUrl : '/erpec/goods/control/ajaxGoodsEnable',
             disableUrl : '/erpec/goods/control/ajaxGoodsDisable',
           },
@@ -127,7 +234,7 @@
             {text : '<i class="icon-plus"></i>新建',btnCls : 'button button-small',handler:addFunction}
           ]
         },
-        plugins : [editing, BUI.Grid.Plugins.CheckSelection, BUI.Grid.Plugins.AutoFit] // 插件形式引入多选表格
+        plugins : [editingNew, editingEdit, editingPrice, BUI.Grid.Plugins.AutoFit] // 插件形式引入多选表格
       });
 
     var search = new Search({
@@ -138,7 +245,7 @@
 
     function addFunction(){
       var newData = {isNew : true}; //标志是新增加的记录
-      editing.add(newData,'name'); //添加记录后，直接编辑
+      editingNew.add(newData,'name'); //添加记录后，直接编辑
     }
 
     //删除操作
@@ -165,6 +272,20 @@
       if(prodIds.length){
         BUI.Message.Confirm('确认要提交选中的记录么？',function(){
           store.save('submit',{prodIds : prodIds});
+        },'question');
+      }
+    }
+    
+    //提交编辑操作
+    function submitEditItems(items){
+      var prodIds = [];
+      BUI.each(items,function(item){
+        prodIds.push(item.prodId);
+      });
+
+      if(prodIds.length){
+        BUI.Message.Confirm('确认要提交选中的记录的编辑信息么？',function(){
+          store.save('submitEdit',{prodIds : prodIds});
         },'question');
       }
     }
@@ -212,6 +333,9 @@
       }else if(sender.hasClass('btn-disable')){
       	var record = ev.record;
         disableItems([record]);
+      }else if(sender.hasClass('btn-submit-edit')){
+      	var record = ev.record;
+        submitEditItems([record]);
       }
       
     });

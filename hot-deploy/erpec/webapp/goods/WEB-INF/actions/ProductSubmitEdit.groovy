@@ -10,7 +10,7 @@ import org.ofbiz.entity.GenericEntityException
 import org.ofbiz.entity.GenericValue
 import org.ofbiz.entity.transaction.TransactionUtil
 
-String module = "ProductEnable.groovy";
+String module = "ProductSubmit.groovy";
 
 HttpServletRequest request = request;
 GenericDelegator delegator = delegator;
@@ -31,39 +31,20 @@ try {
 	String[] prodIds = request.getParameterValues("prodIds[]");
 	Debug.logInfo(">>>products:"+ prodIds, module);
 	for (prodId in prodIds) {
-		Debug.logInfo(">>>deal:" + prodId, module);
-
-		GenericValue product = delegator.findOne("Product", UtilMisc.toMap("productId", prodId), false);
-		if (null == product) {
-			throw new Exception("unknow product");
+		// 商品
+		GenericValue productExt = delegator.findOne("ProductExt", UtilMisc.toMap("productId", prodId), false);
+		if (null == productExt) {
+			throw new Exception("Cannot find product state for prodId:" + prodId);
 		}
 
-		GenericValue productExt = product.getRelatedOne("ProductExt", false);
-		if (null == productExt || !"DISABLED".equals(productExt.get("state"))) {
-			throw new Exception("product pre state should be disabled");
+		String oldStateEdit = productExt.getString("stateEdit");
+		if (!"_NA_".equals(oldStateEdit)) {
+			throw new Exception("Unexpected product stateEdit:" + oldStateEdit + ", prodId:" + prodId);
 		}
 
-		// 更新产品状态
-		productExt.set("stateEnable", "ENABLING");
+		// 新建带提交
+		productExt.set("stateEdit", "EDITING");
 		productExt.store();
-
-		GenericValue tmpProductEnable = product.getRelatedOne("TmpProductEnable", false);
-		if (null == tmpProductEnable) {
-			tmpProductEnable = delegator.makeValue("TmpProductEnable");
-			tmpProductEnable.set("productId", prodId);
-			tmpProductEnable.set("partyId", "admin");//TODO:here use the real login user id
-			tmpProductEnable.set("tmpEnable", "ENABLE");
-			tmpProductEnable.set("checkState", "_NA_");//未经审核
-			tmpProductEnable.set("checkMsg", "_NA_");
-			delegator.create(tmpProductEnable);
-		} else {
-			tmpProductEnable.set("partyId", "admin");//TODO:here use the real login user id
-			tmpProductEnable.set("tmpEnable", "ENABLE");
-			tmpProductEnable.set("checkState", "_NA_");//未经审核
-			tmpProductEnable.set("checkMsg", "_NA_");
-			tmpProductEnable.store();
-		}
-
 	}
 
 	Debug.logInfo("End>>>", module);

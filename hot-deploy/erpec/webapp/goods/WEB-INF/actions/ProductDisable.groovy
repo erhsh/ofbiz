@@ -44,10 +44,14 @@ try {
 		}
 
 		// 产品当前状态验证
-		GenericValue productState = product.getRelatedOne("ProductState", false);
-		if (null == productState || !PROD_STAT_ENABLED.equals(productState.get("state"))) {
-			throw new Exception("product pre state should be disabled");
+		GenericValue productExt = product.getRelatedOne("ProductExt", false);
+		if (null == productExt || !PROD_STAT_ENABLED.equals(productExt.get("state"))) {
+			throw new Exception("product pre state should be enabled");
 		}
+
+		// 更新产品状态
+		productExt.set("stateEnable", "DISABLING");
+		productExt.store();
 
 		// 存储临时状态
 		GenericValue tmpProductEnable = product.getRelatedOne("TmpProductEnable", false);

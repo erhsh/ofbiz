@@ -19,28 +19,28 @@ GenericDelegator delegator = delegator;
 
 DynamicViewEntity dve = new DynamicViewEntity();
 
-dve.addMemberEntity("PCM", "ProductCategoryMember");
-dve.addAlias("PCM", "productId");
-dve.addAlias("PCM", "productCategoryId");
-dve.addAlias("PCM", "thruDate");
+dve.addMemberEntity("PE", "ProductExt");
+dve.addAlias("PE", "productId");
+dve.addAlias("PE", "productCode");
+dve.addAlias("PE", "state");
 
 dve.addMemberEntity("PRD", "Product")
 dve.addAlias("PRD", "productName");
 dve.addAlias("PRD", "internalName");
 dve.addAlias("PRD", "description");
-dve.addViewLink("PCM", "PRD", Boolean.TRUE, ModelKeyMap.makeKeyMapList("productId"))
+dve.addViewLink("PE", "PRD", Boolean.TRUE, ModelKeyMap.makeKeyMapList("productId"))
+
+dve.addMemberEntity("PCM", "ProductCategoryMember"); //产品分类关系
+dve.addAlias("PCM", "productCategoryId");
+dve.addAlias("PCM", "thruDate");
+dve.addViewLink("PRD", "PCM", Boolean.TRUE, ModelKeyMap.makeKeyMapList("productId"))
 
 dve.addMemberEntity("PP", "ProductPrice");
 dve.addAlias("PP", "price");
 dve.addViewLink("PRD", "PP", Boolean.TRUE, ModelKeyMap.makeKeyMapList("productId"))
 
-dve.addMemberEntity("PS", "ProductState");
-dve.addAlias("PS", "state");
-dve.addViewLink("PRD", "PS", Boolean.TRUE, ModelKeyMap.makeKeyMapList("productId"))
-
 // 所有照明产品的父分类
 String productCategoryId = parameters.prodCategoryId;
-
 EntityListIterator eli;
 List<ProductVO> prodVOs = new ArrayList<ProductVO>();
 boolean beganTransaction = false;
@@ -65,6 +65,7 @@ try {
 	for (GenericValue product : eli.getCompleteList()) {
 		ProductVO prodVO = new ProductVO();
 		prodVO.setProdId(product.getString("productId"));
+		prodVO.setProdCode(product.getString("productCode"));
 		prodVO.setProdName(product.getString("productName"));
 		prodVO.setProdModel(product.getString("internalName"));
 		prodVO.setProdCategory(product.getString("productCategoryId"));

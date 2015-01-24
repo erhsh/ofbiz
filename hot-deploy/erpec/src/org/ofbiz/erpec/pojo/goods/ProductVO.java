@@ -1,7 +1,8 @@
 package org.ofbiz.erpec.pojo.goods;
 
 public class ProductVO {
-	private String prodId;// 编号
+	private String prodId;// Id
+	private String prodCode;// 商品编码
 	private String prodName;// 品名规格
 	private String prodModel;// 型号
 	private String prodPrice;// 价格
@@ -9,6 +10,7 @@ public class ProductVO {
 	private String prodUnit;// 计量单位
 	private String prodCostPrice;// 原价
 	private String prodCategory;// 分类
+	private ProductCategoryVO prodCategoryVO; // 所属分类实体
 	private String prodLightColor;// 发光颜色
 	private String prodColor;// 颜色
 	private String prodLength;// 长
@@ -22,6 +24,14 @@ public class ProductVO {
 
 	public void setProdId(String prodId) {
 		this.prodId = prodId;
+	}
+
+	public String getProdCode() {
+		return prodCode;
+	}
+
+	public void setProdCode(String prodCode) {
+		this.prodCode = prodCode;
 	}
 
 	public String getProdName() {
@@ -80,6 +90,14 @@ public class ProductVO {
 		this.prodCategory = prodCategory;
 	}
 
+	public ProductCategoryVO getProdCategoryVO() {
+		return prodCategoryVO;
+	}
+
+	public void setProdCategoryVO(ProductCategoryVO prodCategoryVO) {
+		this.prodCategoryVO = prodCategoryVO;
+	}
+
 	public String getProdLightColor() {
 		return prodLightColor;
 	}
@@ -130,11 +148,12 @@ public class ProductVO {
 
 	@Override
 	public String toString() {
-		return "ProductVO [prodId=" + prodId + ", prodName=" + prodName
-				+ ", prodModel=" + prodModel + ", prodPrice=" + prodPrice
-				+ ", prodState=" + prodState + ", prodUnit=" + prodUnit
-				+ ", prodCostPrice=" + prodCostPrice + ", prodCategory="
-				+ prodCategory + ", prodLightColor=" + prodLightColor
+		return "ProductVO [prodId=" + prodId + ", prodCode=" + prodCode
+				+ ", prodName=" + prodName + ", prodModel=" + prodModel
+				+ ", prodPrice=" + prodPrice + ", prodState=" + prodState
+				+ ", prodUnit=" + prodUnit + ", prodCostPrice=" + prodCostPrice
+				+ ", prodCategory=" + prodCategory + ", prodCategoryVO="
+				+ prodCategoryVO + ", prodLightColor=" + prodLightColor
 				+ ", prodColor=" + prodColor + ", prodLength=" + prodLength
 				+ ", prodWidth=" + prodWidth + ", prodHeight=" + prodHeight
 				+ ", prodWeight=" + prodWeight + "]";

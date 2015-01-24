@@ -5,34 +5,82 @@
 
 <web-app>
 
-	<context-param>
-		<param-name>mainDecoratorLocation</param-name>
-		<param-value>component://erpec/widget/erpec/CommonScreens.xml</param-value>
-		<description>The location of the main-decorator screen to use for this
-			webapp; referred to as a context variable in screen def XML files.</description>
-	</context-param>
+    <context-param>
+        <param-name>webSiteId</param-name>
+        <param-value>WebStore</param-value>
+    </context-param>
+    <context-param>
+        <param-name>mainDecoratorLocation</param-name>
+        <param-value>component://erpec/widget/erpec/CommonScreens.xml</param-value>
+        <description>The location of the main-decorator screen to use for this
+            webapp; referred to as a context variable
+            in screen def XML files.</description>
+    </context-param>
+
+    <context-param>
+        <param-name>javax.ws.rs.core.Application</param-name>
+        <param-value>org.ofbiz.erpec.rest.RestApplication</param-value>
+    </context-param>
+    <context-param>
+        <param-name>resteasy.servlet.mapping.prefix</param-name>
+        <param-value>/rest</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.ofbiz.webapp.control.ControlEventListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.ofbiz.webapp.control.LoginEventListener</listener-class>
+    </listener>
+    <filter>
+        <filter-name>ContextFilter</filter-name>
+        <filter-class>org.ofbiz.webapp.control.ContextFilter</filter-class>
+        <init-param>
+            <param-name>allowedPaths</param-name>
+            <param-value>/control:/index.html:/rest</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>ContextFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>ControlServlet</servlet-name>
+        <servlet-class>
+            org.ofbiz.webapp.control.ControlServlet
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ControlServlet</servlet-name>
+        <url-pattern>/control/*</url-pattern>
+    </servlet-mapping>
 
 	<filter>
-		<filter-name>ContextFilter</filter-name>
-		<filter-class>org.ofbiz.webapp.control.ContextFilter</filter-class>
+		<filter-name>CatalogUrlFilter</filter-name>
+		<display-name>CatalogUrlFilter</display-name>
+		<filter-class>org.ofbiz.product.category.CatalogUrlFilter</filter-class>
 		<init-param>
-			<param-name>allowedPaths</param-name>
-			<param-value>/control:/index.html</param-value>
+			<param-name>defaultLocaleString</param-name>
+			<param-value>en_US</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
-		<filter-name>ContextFilter</filter-name>
+		<filter-name>CatalogUrlFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
-	<servlet>
-		<servlet-name>ControlServlet</servlet-name>
-		<servlet-class>
-			org.ofbiz.webapp.control.ControlServlet
-		</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ControlServlet</servlet-name>
-		<url-pattern>/control/*</url-pattern>
-	</servlet-mapping>
+	
+    <servlet>
+        <servlet-name>Resteasy</servlet-name>
+        <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Resteasy</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
 </web-app>

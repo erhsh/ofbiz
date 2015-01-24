@@ -38,14 +38,13 @@ try {
 		}
 
 		// 商品状态
-		GenericValue productState = product.getRelatedOne("ProductState", false);
-		String oldState = productState.getString("state");
-		if (!PROD_STAT_NEW.equals(oldState)) {
+		GenericValue productExt = product.getRelatedOne("ProductExt", false);
+		if (null == productExt || !PROD_STAT_NEW.equals(productExt.getString("state"))) {
 			throw new Exception("Unexpected product state");
 		}
 
 		// 删除状态
-		productState.remove();
+		productExt.remove();
 
 		// 删除分类关系
 		product.removeRelated("ProductCategoryMember");

@@ -78,19 +78,30 @@
 <script type="text/javascript">
   BUI.use('common/search',function (Search) {
     
-    var enumObj = {"1":"男","0":"女"},
+  	var enumObj = {
+				<#list productCategoryVOs as productCategoryVO>
+					"${productCategoryVO.productCategoryId}":"${productCategoryVO.categoryName}",
+				</#list>
+  	  },
+  	  enumState = {
+				"NEW":"新建未提交",
+				"CHECKING":"新建审核中",
+				"ENABLED":"架上",
+				"DISABLED":"架下",
+  	  },
       editing = new BUI.Grid.Plugins.DialogEditing({
         contentId : 'content', //设置隐藏的Dialog内容
         autoSave : true, //添加数据或者修改数据时，自动保存
         triggerCls : 'btn-edit'
       }),
       columns = [
-          {title:'商品编号',dataIndex:'prodId',width:150},
-          {title:'品名规格',dataIndex:'prodName',width:200},
-          {title:'商品型号',dataIndex:'prodModel',width:200},
+          {title:'商品ID',dataIndex:'prodId',width:80},
+          {title:'商品编号',dataIndex:'prodCode',width:150},
+          {title:'品名规格',dataIndex:'prodName',width:150},
+          {title:'商品型号',dataIndex:'prodModel',width:150},
           {title:'分销售价',dataIndex:'prodPrice',width:100},
-          {title:'商品分类',dataIndex:'prodCategory',width:100},
-          {title:'状态',dataIndex:'prodState',width:50},
+          {title:'商品分类',dataIndex:'prodCategory',width:100,renderer:BUI.Grid.Format.enumRenderer(enumObj)},
+          {title:'状态',dataIndex:'prodState',width:100,renderer:BUI.Grid.Format.enumRenderer(enumState)},
           {title:'操作',dataIndex:'',width:200,renderer : function(value,obj){
             var passStr = '<span class="grid-command btn-pass" title="审核通过">审核通过</span>',
               rejectStr = '<span class="grid-command btn-reject" title="打回申请">打回申请</span>';
@@ -111,7 +122,7 @@
         tbar : {
           items : []
         },
-        plugins : [editing,BUI.Grid.Plugins.CheckSelection,BUI.Grid.Plugins.AutoFit] // 插件形式引入多选表格
+        plugins : [editing, BUI.Grid.Plugins.AutoFit] // 插件形式引入多选表格
       });
 
     var search = new Search({
@@ -123,13 +134,15 @@
 	// 通过    
     function passItems(items){
       var prodIds = [];
+      var prodStates = [];
       BUI.each(items,function(item){
         prodIds.push(item.prodId);
+        prodStates.push(item.prodState);
       });
 
       if(prodIds.length){
         BUI.Message.Confirm('确认要通过选中的记录么？',function(){
-          store.save('pass',{prodIds : prodIds});
+          store.save('pass',{prodIds : prodIds, prodStates : prodStates});
         },'question');
       }
     }
@@ -137,13 +150,15 @@
     // 打回
     function rejectItems(items){
       var prodIds = [];
+      var prodStates = [];
       BUI.each(items,function(item){
         prodIds.push(item.prodId);
+        prodStates.push(item.prodState);
       });
 
       if(prodIds.length){
         BUI.Message.Confirm('确认要打回选中的记录么？',function(){
-          store.save('reject',{prodIds : prodIds});
+          store.save('reject',{prodIds : prodIds, prodStates : prodStates});
         },'question');
       }
     }

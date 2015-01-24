@@ -28,10 +28,11 @@ try {
 	beganTransaction = TransactionUtil.begin();
 
 	// 解析参数
+	String prodCode = request.getParameter("prodCode");
 	String prodName = request.getParameter("prodName");
 	String prodModel = request.getParameter("prodModel");
 	String prodPrice = request.getParameter("prodPrice");
-	String prodCategoryId = request.getParameter("prodCategoryId")
+	String prodCategoryId = request.getParameter("prodCategory")
 	String prodTypeId = "FINISHED_GOOD"; // 产品类型：成品
 	String prodPriceTypeId = "DEFAULT_PRICE"; // 价格类型:默认商品价格
 	String prodPricePurposeId = "PURCHASE"; // 价格目的：购买价格
@@ -46,13 +47,14 @@ try {
 	delegator.create(product);
 
 	// 商品状态 
-	GenericValue productState = delegator.makeValue("ProductState");
-	productState.set("productId", prodId);
-	productState.set("state", PROD_STAT_NEW); // 商品列表展示状态----系统是否展示商品，依赖于此
-	productState.set("stateEnable", DataModelConstants.SEQ_ID_NA); // 上下架状态
-	productState.set("stateInfo", DataModelConstants.SEQ_ID_NA); // 编辑状态
-	productState.set("statePrice", DataModelConstants.SEQ_ID_NA); // 调价状态
-	delegator.create(productState);
+	GenericValue productExt = delegator.makeValue("ProductExt");
+	productExt.set("productId", prodId);
+	productExt.set("productCode", prodCode);
+	productExt.set("state", PROD_STAT_NEW); // 商品列表展示状态----系统是否展示商品，依赖于此
+	productExt.set("stateEnable", DataModelConstants.SEQ_ID_NA); // 上下架状态
+	productExt.set("stateEdit", DataModelConstants.SEQ_ID_NA); // 编辑状态
+	productExt.set("statePrice", DataModelConstants.SEQ_ID_NA); // 调价状态
+	delegator.create(productExt);
 
 	// 商品价格
 	GenericValue productPrice = delegator.makeValue("ProductPrice");

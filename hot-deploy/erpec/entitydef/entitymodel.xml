@@ -78,16 +78,20 @@
     <!-- ========================================================= -->
     <!-- org.ofbiz.erpec.goods -->
     <!-- ========================================================= -->
-    <entity entity-name="ProductState" package-name="org.ofbiz.erpec.goods" title="ProductState Entity">
+    <entity entity-name="ProductExt" package-name="org.ofbiz.erpec.goods" title="Product extends Entity">
         <field name="productId" type="id-ne"></field>
+        <field name="productCode" type="value"></field>
         <field name="state" type="name"></field>
         <field name="stateEnable" type="name"></field>
-        <field name="stateInfo" type="name"></field>
+        <field name="stateEdit" type="name"></field>
         <field name="statePrice" type="name"></field>
         <prim-key field="productId" />
         <relation type="one" rel-entity-name="Product">
             <key-map field-name="productId" />
         </relation>
+        <index name="PROD_UNQCD" unique="true">
+            <index-field name="productCode" />
+        </index>
     </entity>
     <entity entity-name="TmpProductEnable" package-name="org.ofbiz.erpec.goods" title="TmpProductEnable Entity">
         <field name="productId" type="id-ne"></field>
@@ -103,13 +107,13 @@
             <key-map field-name="partyId" />
         </relation>
     </entity>
-    <entity entity-name="TmpProductInfo" package-name="org.ofbiz.erpec.goods" title="TmpProductInfo Entity">
+    <entity entity-name="TmpProductEdit" package-name="org.ofbiz.erpec.goods" title="TmpProductEdit Entity">
         <field name="productId" type="id-ne"></field>
         <field name="partyId" type="id-ne"></field>
         <field name="tmpProductNo" type="name"></field>
         <field name="tmpProductName" type="name"></field>
         <field name="tmpInternalName" type="name"></field>
-        <field name="tmpProductCategoryId" type="id-ne"></field>
+        <field name="tmpProductCategoryId" type="id-ne" not-null="true"></field>
         <field name="checkState" type="name"></field>
         <field name="checkMsg" type="name"></field>
         <prim-key field="productId" />
@@ -126,7 +130,7 @@
     <entity entity-name="TmpProductPrice" package-name="org.ofbiz.erpec.goods" title="TmpProductPrice Entity">
         <field name="productId" type="id-ne"></field>
         <field name="partyId" type="id-ne"></field>
-        <field name="tmpPrice" type="name"></field>
+        <field name="tmpPrice" type="currency-precise"></field>
         <field name="fromDate" type="date-time"></field>
         <field name="thruDate" type="date-time"></field>
         <field name="checkState" type="name"></field>

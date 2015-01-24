@@ -31,12 +31,20 @@
         <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductEdt.groovy" />
         <response name="success" type="request" value="json" />
     </request-map>
+    <request-map uri="ajaxGoodsEdtPrice">
+        <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductEdtPrice.groovy" />
+        <response name="success" type="request" value="json" />
+    </request-map>
     <request-map uri="ajaxGoodsDel">
         <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductDel.groovy" />
         <response name="success" type="request" value="json" />
     </request-map>
     <request-map uri="ajaxGoodsSubmit">
         <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductSubmit.groovy" />
+        <response name="success" type="request" value="json" />
+    </request-map>
+    <request-map uri="ajaxGoodsSubmitEdit">
+        <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductSubmitEdit.groovy" />
         <response name="success" type="request" value="json" />
     </request-map>
     <request-map uri="ajaxGoodsEnable">
@@ -47,6 +55,8 @@
         <event type="groovy" path="component://erpec/webapp/goods/WEB-INF/actions/ProductDisable.groovy" />
         <response name="success" type="request" value="json" />
     </request-map>
+
+
     <!-- 商品审核 -->
     <request-map uri="goodsCheckView">
         <response name="success" type="view" value="goodsCheckView" />

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-engine-xml>
+    <TemporalExpression tempExprId="CHECK_PRICE_CHANGE" tempExprTypeId="FREQUENCY" description="Every Day" integer1="10" integer2="1"/>
+    <JobSandbox jobId="CHECK_PRICE_CHANGE" jobName="Check price change job" runTime="2000-01-01 00:00:00.000" serviceName="makePriceChangeValidate" poolId="pool" runAsUser="system" tempExprId="CHECK_PRICE_CHANGE" maxRecurrenceCount="-1"/>
+</entity-engine-xml>
